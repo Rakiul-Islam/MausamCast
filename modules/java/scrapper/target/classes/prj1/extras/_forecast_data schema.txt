@@ -1,0 +1,42 @@
+from datetime,
+to datetime,
+
+symbol_number int,
+symbol_name varchar(20),
+symbol_var varchar(10),
+
+precipitation_probability double,
+precipitation_unit varchar(10),
+precipitation_value double,
+precipitation_type varchar(20),
+
+windDirection_deg int,
+windDirection_code varchar(10),
+windDirection_name varchar(20),
+
+windSpeed_mps double,
+windSpeed_unit varchar(10),
+windSpeed_name varchar(20),
+
+windGust_gust double,
+windGust_unit varchar(10),
+
+temperature_unit varchar(10),
+temperature_value double,
+temperature_min double,
+temperature_max double,
+
+feels_like_value double,
+feels_like_unit varchar(10),
+
+pressure_unit varchar(10),
+pressure_value int,
+
+humidity_value int,
+humidity_unit varchar(10),
+
+clouds_value varchar(20),
+clouds_all int,
+clouds_unit varchar(10),
+
+visibility_value int,

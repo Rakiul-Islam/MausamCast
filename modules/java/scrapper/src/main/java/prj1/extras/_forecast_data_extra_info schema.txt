@@ -1,0 +1,14 @@
+location_name varchar(20),
+location_country varchar(20),
+location_timezone int,
+
+altitude double,
+latitude double,
+longitude double,
+geobase varchar(20),
+geobaseid int,
+
+meta varchar(20),
+
+sun_rise datetime,
+sun_set datetime,
