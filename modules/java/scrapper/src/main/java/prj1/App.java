@@ -357,7 +357,9 @@ public class App{
                     statement.executeUpdate("insert into "+city_name+"_weather_data "+weather_data_prototype_without_datatype+ "values"+query_st);
                 }
                 catch(SQLIntegrityConstraintViolationException e1){
-                    System.out.println("No new 'Current Weather' Data found on site!!!");
+                    statement.executeUpdate("DELETE FROM "+city_name+"_weather_data "+"WHERE date_time = " + "'" + data1.get("lastupdate").get("value").replace('T', ' ') + "'" +";");
+                    statement.executeUpdate("insert into "+city_name+"_weather_data "+weather_data_prototype_without_datatype+ "values"+query_st);
+                    System.out.println("No new 'Current Weather' Data found on site!!!(Updated Data)");
                 }
                 catch(Exception ee){
                     System.out.println("Error Occured while inserting into "+city_name+"_weather_data:");
@@ -412,7 +414,8 @@ public class App{
                 query_st += "," + "'" + data2.get(from_).get("clouds_unit") + "'";
                 query_st += "," + data2.get(from_).get("visibility_value") ;
                 query_st += ");";
-
+                query_st = query_st.replace(",,", ",NULL,");
+                query_st = query_st.replace("''", "NULL");
                 try{
                     statement.executeUpdate("insert into "+city_name+"_forecast_data "+forecast_data_prototype_without_datatype+ "values"+query_st);
                 }
@@ -439,6 +442,8 @@ public class App{
                 query_st += "," + "'" + data2.get("extra_info").get("sun_rise").replace('T', ' ') + "'" ;
                 query_st += "," + "'" + data2.get("extra_info").get("sun_set").replace('T', ' ') + "'" ;
                 query_st += ");";
+                query_st = query_st.replace(",,", ",NULL,");
+                query_st = query_st.replace("''", "NULL");
                 try{
                     statement.executeUpdate("insert into "+city_name+"_forecast_data_extra_info "+forecast_ext_data_prototype_without_datatype+ "values"+query_st);
                 }

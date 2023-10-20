@@ -18,65 +18,66 @@ String capitalizeWords(String input) {
   }
   return words.join(' ');
 }
+/*
+  // class HomeScreen extends StatelessWidget {
+  //   const HomeScreen({super.key});
 
-// class HomeScreen extends StatelessWidget {
-//   const HomeScreen({super.key});
+  //   @override
+  //   Widget build(BuildContext context) {
+  //     return Consumer<DataModel>(builder: (context, value, child) {
+  //       return Scaffold(
+  //         appBar: AppBar(
+  //           leading: BackButton(
+  //             onPressed: () {
+  //               Navigator.pushReplacement(context,
+  //                   MaterialPageRoute(builder: (context) {
+  //                 return SetLocationPage();
+  //               }));
+  //             },
+  //           ),
+  //         ),
+  //         body: value.dataFetchedOnce
+  //             ? CustomDataTiles()
+  //             : FutureBuilder<int>(
+  //                 future: Provider.of<DataModel>(context, listen: false)
+  //                     .fetchWeatherData(),
+  //                 builder: (context, snapshot) {
+  //                   switch (snapshot.connectionState) {
+  //                     case ConnectionState.done:
+  //                       print("from fetchData : ${snapshot.data}");
+  //                       if (snapshot.data == 0) {
+  //                         return CustomDataTiles();
+  //                       } else {
+  //                         return const Center(
+  //                           child: Text(
+  //                               "Problem in fetching data from server...Did you set the location correctly?"),
+  //                         );
+  //                       }
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return Consumer<DataModel>(builder: (context, value, child) {
-//       return Scaffold(
-//         appBar: AppBar(
-//           leading: BackButton(
-//             onPressed: () {
-//               Navigator.pushReplacement(context,
-//                   MaterialPageRoute(builder: (context) {
-//                 return SetLocationPage();
-//               }));
-//             },
-//           ),
-//         ),
-//         body: value.dataFetchedOnce
-//             ? CustomDataTiles()
-//             : FutureBuilder<int>(
-//                 future: Provider.of<DataModel>(context, listen: false)
-//                     .fetchWeatherData(),
-//                 builder: (context, snapshot) {
-//                   switch (snapshot.connectionState) {
-//                     case ConnectionState.done:
-//                       print("from fetchData : ${snapshot.data}");
-//                       if (snapshot.data == 0) {
-//                         return CustomDataTiles();
-//                       } else {
-//                         return const Center(
-//                           child: Text(
-//                               "Problem in fetching data from server...Did you set the location correctly?"),
-//                         );
-//                       }
-
-//                     default:
-//                       return Scaffold(
-//                         body: Align(
-//                           alignment: Alignment.center,
-//                           child: Text(
-//                             "Loading...",
-//                             style: GoogleFonts.notoSans(
-//                               textStyle: const TextStyle(
-//                                 fontSize: 20,
-//                                 fontWeight: FontWeight.bold,
-//                                 color: Color.fromARGB(255, 26, 141, 255),
-//                               ),
-//                             ),
-//                           ),
-//                         ),
-//                       );
-//                   }
-//                 },
-//               ),
-//       );
-//     });
-//   }
-// }
+  //                     default:
+  //                       return Scaffold(
+  //                         body: Align(
+  //                           alignment: Alignment.center,
+  //                           child: Text(
+  //                             "Loading...",
+  //                             style: GoogleFonts.notoSans(
+  //                               textStyle: const TextStyle(
+  //                                 fontSize: 20,
+  //                                 fontWeight: FontWeight.bold,
+  //                                 color: Color.fromARGB(255, 26, 141, 255),
+  //                               ),
+  //                             ),
+  //                           ),
+  //                         ),
+  //                       );
+  //                   }
+  //                 },
+  //               ),
+  //       );
+  //     });
+  //   }
+  // }
+*/
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -87,6 +88,8 @@ class HomeScreen extends StatelessWidget {
       return Scaffold(
         backgroundColor: Color.fromARGB(255, 0, 77, 172),
         appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          shadowColor: Colors.transparent,
           leading: BackButton(
             onPressed: () {
               Navigator.pushReplacement(context,
@@ -111,25 +114,61 @@ class HomeScreen extends StatelessWidget {
                             padding: EdgeInsets.only(top: 20),
                             child: WeatherDataTile());
                       } else {
-                        return const Center(
-                          child: Text(
-                              "Problem in fetching data from server...Did you set the location correctly?"),
+                        return Align(
+                          alignment: Alignment.center,
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Container(
+                              width: 980,
+                              height: 60,
+                              child: Row(
+                                children: [
+                                  const Icon(
+                                    color: Color.fromARGB(255, 250, 137, 129),
+                                    Icons.error,
+                                    size: 50,
+                                  ),
+                                  Text(
+                                    "  Problem in fetching data from server...Did you set the location correctly?",
+                                    style: GoogleFonts.notoSans(
+                                      textStyle: const TextStyle(
+                                        fontSize: 25,
+                                        fontWeight: FontWeight.bold,
+                                        color:
+                                            Color.fromARGB(255, 196, 192, 192),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
                         );
                       }
 
                     default:
-                      return Scaffold(
-                        body: Align(
-                          alignment: Alignment.center,
-                          child: Text(
-                            "Loading...",
-                            style: GoogleFonts.notoSans(
-                              textStyle: const TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                                color: Color.fromARGB(255, 26, 141, 255),
+                      return Align(
+                        alignment: Alignment.center,
+                        child: Container(
+                          width: 250,
+                          height: 60,
+                          child: Row(
+                            children: [
+                              const CircularProgressIndicator(
+                                strokeWidth: 5,
+                                color: Colors.white,
                               ),
-                            ),
+                              Text(
+                                "  Loading...",
+                                style: GoogleFonts.notoSans(
+                                  textStyle: const TextStyle(
+                                    fontSize: 30,
+                                    fontWeight: FontWeight.bold,
+                                    color: Color.fromARGB(255, 255, 255, 255),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       );
@@ -256,7 +295,7 @@ class _WeatherDataTileState extends State<WeatherDataTile> {
                   ),
                 ),
                 Positioned(
-                  top: 50,
+                  top: 55,
                   right: 30,
                   child: Text(
                     isHovered ? "${dateTime[4]}" : "",

@@ -82,6 +82,7 @@ class _CustomTabsState extends State<CustomTabs>
           ],
         ),
       ),
+      backgroundColor: Color.fromARGB(255, 0, 77, 172),
       body: TabBarView(
         controller: _tabController,
         children: [
@@ -142,19 +143,37 @@ class _CustomTab1State extends State<CustomTab1> {
                 child: TextField(
                   controller: _textEditingController,
                   decoration: const InputDecoration(
+                    focusColor: Colors.white,
                     icon: Icon(
                       Icons.location_on,
                       size: 40,
                     ),
                     labelText: 'Enter Your Location',
                     hintText: 'Enter Your City/Town/Locality Name...',
+                    labelStyle: TextStyle(
+                      color: Colors.white, // Label text color
+                    ),
+                    hintStyle: TextStyle(
+                      color:
+                          Color.fromARGB(105, 255, 255, 255), // Hint text color
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                          color: Color.fromARGB(
+                              255, 255, 0, 0)), // Border color when not focused
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                          color: Color.fromARGB(
+                              255, 0, 255, 76)), // Border color when focused
+                    ),
                   ),
                   style: GoogleFonts.poppins(
                     fontSize: 22.0,
                     fontWeight: FontWeight.normal,
-                    color: Colors.black,
+                    color: Colors.white,
                   ),
-                  cursorColor: Colors.blue,
+                  cursorColor: const Color.fromARGB(255, 255, 255, 255),
                   keyboardType: TextInputType.text,
                   maxLines: 1,
                   textInputAction: TextInputAction.done,
@@ -163,6 +182,16 @@ class _CustomTab1State extends State<CustomTab1> {
               width: 240,
               height: 50,
               child: ElevatedButton(
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all<Color>(
+                      Color.fromARGB(0, 0, 0, 0)),
+                  shadowColor: MaterialStateProperty.all<Color>(
+                      Color.fromARGB(0, 0, 0, 0)),
+                  side: MaterialStateProperty.all<BorderSide>(
+                    const BorderSide(
+                        width: 3, color: Color.fromARGB(255, 255, 255, 255)),
+                  ),
+                ),
                 onPressed: () {
                   setState(() {
                     _loadingState = true;
@@ -186,6 +215,7 @@ class _CustomTab1State extends State<CustomTab1> {
                             color: Colors.white,
                           )
                         : const Icon(
+                            color: Colors.white,
                             Icons.sell_rounded,
                             size: 25,
                           ),
@@ -240,6 +270,16 @@ class _CustomTab2State extends State<CustomTab2> {
                 width: 190,
                 height: 50,
                 child: ElevatedButton(
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all<Color>(
+                        Color.fromARGB(0, 0, 0, 0)),
+                    shadowColor: MaterialStateProperty.all<Color>(
+                        Color.fromARGB(0, 0, 0, 0)),
+                    side: MaterialStateProperty.all<BorderSide>(
+                      const BorderSide(
+                          width: 3, color: Color.fromARGB(255, 255, 255, 255)),
+                    ),
+                  ),
                   onPressed: () async {
                     setState(() {
                       _loadingState = true;
@@ -291,12 +331,12 @@ class _CustomTab2State extends State<CustomTab2> {
             ),
             showGetCitySuccess && !_loadingState
                 ? Text(
-                    "Set Location to ${value.cityName} ?",
+                    "Set Location to ${value.cityName} ?\n",
                     style: GoogleFonts.notoSans(
                       textStyle: const TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
-                        color: Colors.green,
+                        color: Color.fromARGB(255, 174, 255, 177),
                       ),
                     ),
                   )
@@ -309,6 +349,17 @@ class _CustomTab2State extends State<CustomTab2> {
                     width: 240,
                     height: 50,
                     child: ElevatedButton(
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all<Color>(
+                            Color.fromARGB(0, 0, 0, 0)),
+                        shadowColor: MaterialStateProperty.all<Color>(
+                            Color.fromARGB(0, 0, 0, 0)),
+                        side: MaterialStateProperty.all<BorderSide>(
+                          const BorderSide(
+                              width: 3,
+                              color: Color.fromARGB(255, 255, 255, 255)),
+                        ),
+                      ),
                       onPressed: () {
                         Navigator.pushReplacement(context,
                             MaterialPageRoute(builder: (context) {

@@ -263,9 +263,17 @@ class DataModel extends ChangeNotifier {
         print("Error in fetching data from python server.");
         return 1;
       }
-      final List<dynamic> parsedJson = jsonDecode(response.body.toString());
-      weatherData =
-          parsedJson.map((json) => WeatherData.fromJson(json)).toList();
+      String jsonString = response.body.toString().replaceAll("NaN", "null");
+      try {
+        final List<dynamic> jsonList = json.decode(jsonString);
+        weatherData =
+            jsonList.map((json) => WeatherData.fromJson(json)).toList();
+      } catch (e) {
+        print('Error decoding JSON: $e');
+        weatherData = [];
+        return 1;
+      }
+
       dataFetchedOnce = true;
       notifyListeners();
       return 0;
