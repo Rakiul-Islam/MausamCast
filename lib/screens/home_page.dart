@@ -1,9 +1,6 @@
-import 'dart:html';
-
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 import 'package:my_weather_app/modules/data_model.dart';
 import 'package:my_weather_app/screens/set_location_page.dart';
 import 'package:provider/provider.dart';
@@ -18,66 +15,6 @@ String capitalizeWords(String input) {
   }
   return words.join(' ');
 }
-/*
-  // class HomeScreen extends StatelessWidget {
-  //   const HomeScreen({super.key});
-
-  //   @override
-  //   Widget build(BuildContext context) {
-  //     return Consumer<DataModel>(builder: (context, value, child) {
-  //       return Scaffold(
-  //         appBar: AppBar(
-  //           leading: BackButton(
-  //             onPressed: () {
-  //               Navigator.pushReplacement(context,
-  //                   MaterialPageRoute(builder: (context) {
-  //                 return SetLocationPage();
-  //               }));
-  //             },
-  //           ),
-  //         ),
-  //         body: value.dataFetchedOnce
-  //             ? CustomDataTiles()
-  //             : FutureBuilder<int>(
-  //                 future: Provider.of<DataModel>(context, listen: false)
-  //                     .fetchWeatherData(),
-  //                 builder: (context, snapshot) {
-  //                   switch (snapshot.connectionState) {
-  //                     case ConnectionState.done:
-  //                       print("from fetchData : ${snapshot.data}");
-  //                       if (snapshot.data == 0) {
-  //                         return CustomDataTiles();
-  //                       } else {
-  //                         return const Center(
-  //                           child: Text(
-  //                               "Problem in fetching data from server...Did you set the location correctly?"),
-  //                         );
-  //                       }
-
-  //                     default:
-  //                       return Scaffold(
-  //                         body: Align(
-  //                           alignment: Alignment.center,
-  //                           child: Text(
-  //                             "Loading...",
-  //                             style: GoogleFonts.notoSans(
-  //                               textStyle: const TextStyle(
-  //                                 fontSize: 20,
-  //                                 fontWeight: FontWeight.bold,
-  //                                 color: Color.fromARGB(255, 26, 141, 255),
-  //                               ),
-  //                             ),
-  //                           ),
-  //                         ),
-  //                       );
-  //                   }
-  //                 },
-  //               ),
-  //       );
-  //     });
-  //   }
-  // }
-*/
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -86,7 +23,8 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<DataModel>(builder: (context, value, child) {
       return Scaffold(
-        backgroundColor: Color.fromARGB(255, 0, 77, 172),
+        backgroundColor: Color.fromARGB(255, 0, 29, 66),
+        extendBodyBehindAppBar: true,
         appBar: AppBar(
           backgroundColor: Colors.transparent,
           shadowColor: Colors.transparent,
@@ -101,7 +39,7 @@ class HomeScreen extends StatelessWidget {
         ),
         body: value.dataFetchedOnce
             ? const Padding(
-                padding: EdgeInsets.only(top: 20), child: WeatherDataTile())
+                padding: EdgeInsets.only(top: 20), child: HomePageLayout())
             : FutureBuilder<int>(
                 future: Provider.of<DataModel>(context, listen: false)
                     .fetchWeatherData(),
@@ -112,7 +50,7 @@ class HomeScreen extends StatelessWidget {
                       if (snapshot.data == 0) {
                         return const Padding(
                             padding: EdgeInsets.only(top: 20),
-                            child: WeatherDataTile());
+                            child: HomePageLayout());
                       } else {
                         return Align(
                           alignment: Alignment.center,
@@ -180,6 +118,39 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
+class HomePageLayout extends StatelessWidget {
+  const HomePageLayout({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const SingleChildScrollView(
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          children: [
+            Column(
+              children: [
+                Padding(
+                    padding: EdgeInsets.only(
+                        top: 40, bottom: 5, right: 40, left: 55),
+                    child: WeatherDataTile()),
+                Padding(
+                    padding: EdgeInsets.only(
+                        top: 16, bottom: 10, right: 40, left: 55),
+                    child: StatGraph())
+              ],
+            ),
+            Padding(
+                padding:
+                    EdgeInsets.only(top: 28, bottom: 16, right: 40, left: 30),
+                child: ForecastTilesView())
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class WeatherDataTile extends StatefulWidget {
   const WeatherDataTile({super.key});
 
@@ -195,9 +166,15 @@ class _WeatherDataTileState extends State<WeatherDataTile> {
       WeatherData currWeatherData =
           value.weatherData[value.weatherData.length - 1];
       List dateTime = currWeatherData.dateTime.split(" ");
-      var avgTemp = currWeatherData.temperatureValue.round() - 273;
+      var avgTemp = (currWeatherData.temperatureValue - 273.00).round();
       var maxTemp = currWeatherData.temperatureMax - 273;
       var minTemp = currWeatherData.temperatureMin - 273;
+      var temp = (avgTemp > 45) ? (45) : ((avgTemp < 10) ? (10) : (avgTemp));
+      var bgcolor = Color.fromARGB(
+          255,
+          ((temp - 10) * (255 / 35)).round(),
+          ((45 - temp) * (255 / 35) * (0.5)).round(),
+          ((45 - temp) * (255 / 35)).round());
       int imageName = int.parse(currWeatherData.weatherIcon
           .substring(0, currWeatherData.weatherIcon.length - 1));
       String imageNameMode = currWeatherData.weatherIcon.substring(
@@ -212,19 +189,17 @@ class _WeatherDataTileState extends State<WeatherDataTile> {
       }
       print("$imageName and $imageNameMode");
       return Container(
-        width: 550,
+        width: 580,
         height: 240,
         child: Align(
           alignment: Alignment.center,
           child: AnimatedContainer(
             decoration: BoxDecoration(
-              color: isHovered
-                  ? Colors.transparent
-                  : Color.fromARGB(30, 255, 255, 255),
+              color: isHovered ? Colors.transparent : bgcolor,
               borderRadius: BorderRadius.circular(20),
             ),
             duration: const Duration(milliseconds: 180),
-            width: isHovered ? 550 : 480,
+            width: isHovered ? 580 : 540,
             height: isHovered ? 240 : 220,
             child: MouseRegion(
               onEnter: (event) {
@@ -348,165 +323,150 @@ class _WeatherDataTileState extends State<WeatherDataTile> {
   }
 }
 
-// class CustomDataTiles extends StatelessWidget {
-//   const CustomDataTiles({super.key});
+class StatGraph extends StatefulWidget {
+  const StatGraph({super.key});
+  @override
+  State<StatGraph> createState() => _statGraphState();
+}
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return Consumer<DataModel>(builder: (context, value, child) {
-//       List<WeatherData> weatherDataList = value.weatherData;
-//       return Row(
-//         children: [
-//           Expanded(
-//             child: ListView.builder(
-//               itemCount: weatherDataList.length,
-//               itemBuilder: (context, index) {
-//                 return Padding(
-//                   padding: const EdgeInsets.only(
-//                       top: 20, bottom: 20, left: 60, right: 60),
-//                   child: Container(
-//                     height: 80,
-//                     color: Colors.blue,
-//                     child: Row(children: [
-//                       Container(
-//                         width: 40,
-//                       ),
-//                       Text(
-//                         weatherDataList[index].dateTime,
-//                         style: GoogleFonts.notoSans(
-//                           textStyle: const TextStyle(
-//                             fontSize: 20,
-//                             fontWeight: FontWeight.bold,
-//                             color: Colors.white,
-//                           ),
-//                         ),
-//                       ),
-//                       Container(
-//                         width: 10,
-//                       ),
-//                       Text(
-//                         weatherDataList[index].cityName,
-//                         style: GoogleFonts.notoSans(
-//                           textStyle: const TextStyle(
-//                             fontSize: 20,
-//                             fontWeight: FontWeight.bold,
-//                             color: Colors.white,
-//                           ),
-//                         ),
-//                       ),
-//                       Container(
-//                         width: 10,
-//                       ),
-//                       Text(
-//                         "${weatherDataList[index].tempMax} K",
-//                         style: GoogleFonts.notoSans(
-//                           textStyle: const TextStyle(
-//                             fontSize: 20,
-//                             fontWeight: FontWeight.bold,
-//                             color: Colors.white,
-//                           ),
-//                         ),
-//                       ),
-//                       Container(
-//                         width: 10,
-//                       ),
-//                       Text(
-//                         weatherDataList[index].weatherValue,
-//                         style: GoogleFonts.notoSans(
-//                           textStyle: const TextStyle(
-//                             fontSize: 20,
-//                             fontWeight: FontWeight.bold,
-//                             color: Colors.white,
-//                           ),
-//                         ),
-//                       ),
-//                     ]),
-//                   ),
-//                 );
-//               },
-//             ),
-//           ),
-//         ],
-//       );
-//     });
-//   }
-// }
-
-/*
-  class HomeScreen extends StatefulWidget {
-    String cityName;
-    HomeScreen(this.cityName);
-    @override
-    _HomeScreenState createState() => _HomeScreenState();
-  }
-
-  class _HomeScreenState extends State<HomeScreen> {
-    List<WeatherData> weatherDataList = [];
-
-    @override
-    void initState() {
-      super.initState();
-      fetchData(widget.cityName);
-    }
-
-    Future<void> fetchData(String cityName) async {
-      final response = await http.get(Uri.parse(
-          'http://localhost:5000/api/weather?city_name=${cityName.toLowerCase()}'));
-      if (response.statusCode == 200) {
-        final List<dynamic> parsedJson = jsonDecode(response.body.toString());
-        setState(() {
-          weatherDataList =
-              parsedJson.map((json) => WeatherData.fromJson(json)).toList();
-        });
-      } else {
-        throw Exception('Failed to load data');
+class _statGraphState extends State<StatGraph> {
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<DataModel>(builder: (context, value, child) {
+      List<FlSpot> dataList = [];
+      List<Color> dataListColors = [];
+      List<String> dateList = [];
+      int maxX = 0;
+      for (int i = value.weatherData.length - 1; i >= 0; i--) {
+        try {
+          var avgTemp = value.weatherData[i].temperatureValue - 273.00;
+          dataList.add(FlSpot(
+              maxX.toDouble(), double.parse((avgTemp).toStringAsFixed(2))));
+          var temp =
+              (avgTemp > 45) ? (45) : ((avgTemp < 10) ? (10) : (avgTemp));
+          dataListColors.add(Color.fromARGB(
+              255,
+              ((temp - 10) * (255 / 35)).round(),
+              ((45 - temp) * (255 / 35) * (0.5)).round(),
+              ((45 - temp) * (255 / 35)).round()));
+          dateList.add(value.weatherData[i].dateTime);
+          maxX++;
+          if (maxX == 20) {
+            break;
+          }
+        } catch (e) {
+          print(e);
+        }
       }
-    }
 
-    @override
-    Widget build(BuildContext context) {
-      return Scaffold(
-          appBar: AppBar(
-              leading: BackButton(
-                onPressed: () {
-                  Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (context) {
-                    return SetLocationPage();
-                  }));
+      return Container(
+        width: 500,
+        height: 360,
+        child: LineChart(
+          LineChartData(
+            gridData: FlGridData(show: false),
+            titlesData: FlTitlesData(show: false),
+            borderData: FlBorderData(
+              show: true,
+              border: const Border(
+                bottom: BorderSide(
+                  color: Color(0xff37434d),
+                  width: 1.8,
+                ),
+              ),
+            ),
+            minX: 0,
+            maxX: maxX.toDouble() - 1.0,
+            minY: 0,
+            maxY: 50,
+            lineTouchData: LineTouchData(
+              touchTooltipData: LineTouchTooltipData(
+                tooltipBgColor: const Color.fromARGB(188, 255, 255, 255),
+                tooltipRoundedRadius: 8,
+                getTooltipItems: (List<LineBarSpot> touchedSpots) {
+                  List<LineTooltipItem> tooltipItems = [];
+                  for (LineBarSpot touchedSpot in touchedSpots) {
+                    double x = touchedSpot.x;
+                    double y = touchedSpot.y;
+                    List date = dateList[x.toInt()].split(" ");
+                    LineTooltipItem item = LineTooltipItem(
+                      "${date[1]} ${date[2]} ,${date[4]}\n$y °c",
+                      TextStyle(
+                        color: Color.fromARGB(
+                            255,
+                            ((y - 10) * (255 / 35)).round(),
+                            ((45 - y) * (255 / 35) * (0.5)).round(),
+                            ((45 - y) * (255 / 35)).round()),
+                        fontWeight: FontWeight.bold,
+                      ),
+                    );
+
+                    tooltipItems.add(item);
+                  }
+
+                  return tooltipItems;
                 },
               ),
-              title: Text("Weather Forcast")),
-          body: (weatherDataList.length <= 0)
-              ? (const Row(
-                  children: [Text("Loading Data"), CircularProgressIndicator()],
-                ))
-              : (Row(
-                  children: [
-                    Container(
-                      width: 1000,
-                      child: ListView.builder(
-                        itemCount: weatherDataList.length,
-                        itemBuilder: (context, index) {
-                          return SingleChildScrollView(
-                            child: Container(
-                              child: Column(children: [
-                                Text(weatherDataList[index].dateTime),
-                                Text(weatherDataList[index].cityId),
-                                Text(weatherDataList[index].cityName),
-                              ]),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                    Expanded(
-                        child: Align(
-                            alignment: Alignment.center, child: ButtonStack())),
-                  ],
-                )));
-    }
+              getTouchedSpotIndicator:
+                  (LineChartBarData barData, List<int> indicators) {
+                return indicators.map(
+                  (int index) {
+                    final line = FlLine(
+                        color: Colors.grey,
+                        strokeWidth: 1.5,
+                        dashArray: [2, 4]);
+                    return TouchedSpotIndicatorData(
+                      line,
+                      FlDotData(show: false),
+                    );
+                  },
+                ).toList();
+              },
+            ),
+            lineBarsData: [
+              LineChartBarData(
+                barWidth: 2.8,
+                spots: dataList,
+                isCurved: true,
+                colors: dataListColors,
+                dotData: FlDotData(show: false),
+                belowBarData: BarAreaData(
+                    show: true,
+                    colors: dataListColors.map((color) {
+                      int red = color.red;
+                      int green = color.green;
+                      int blue = color.blue;
+                      int alpha = color.alpha;
+
+                      int newAlpha = (alpha * 0.35).round();
+                      return Color.fromARGB(newAlpha, red, green, blue);
+                    }).toList()),
+              ),
+            ],
+          ),
+        ),
+      );
+    });
   }
-*/
+}
+
+class ForecastTilesView extends StatefulWidget {
+  const ForecastTilesView({super.key});
+
+  @override
+  State<ForecastTilesView> createState() => _ForecastTilesViewState();
+}
+
+class _ForecastTilesViewState extends State<ForecastTilesView> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 750,
+      height: 650,
+      color: Colors.amber,
+    );
+  }
+}
 
 class ButtonStack extends StatefulWidget {
   @override
@@ -550,49 +510,5 @@ class _ButtonStackState extends State<ButtonStack> {
           ),
       ],
     );
-  }
-}
-
-class demoScreen extends StatelessWidget {
-  const demoScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          title: const Text("Flutter Data Display"),
-        ),
-        body: FutureBuilder<int>(
-          future: Provider.of<DataModel>(context, listen: false)
-              .setCityNameGeolocate(),
-          builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              // If the Future is still running, display a loading indicator
-              return const Row(
-                children: [
-                  Text("Getting Location"),
-                  CircularProgressIndicator(),
-                ],
-              );
-            } else if (snapshot.hasError) {
-              // If there is an error while fetching data, display an error message
-              print(snapshot.error);
-              return Text('Error: ${snapshot.error}');
-            } else if (snapshot.connectionState == ConnectionState.done) {
-              // If the Future has completed successfully, display the city name
-              print("snapshot.data ${snapshot.data}");
-              if (snapshot.data == 0) {
-                return Consumer<DataModel>(builder: (context, value, child) {
-                  print("value.cityName = ${value.cityName}");
-                  return HomeScreen();
-                });
-              } else {
-                return Text("error in getcityname");
-              }
-            } else {
-              return Text("Some Problem Occured");
-            }
-          },
-        ));
   }
 }

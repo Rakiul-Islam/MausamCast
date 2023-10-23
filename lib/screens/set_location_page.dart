@@ -40,6 +40,7 @@ class _CustomTabsState extends State<CustomTabs>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Color.fromARGB(255, 0, 29, 66),
         toolbarHeight: 100,
         title: Text(
           "What's Your Location ?",
@@ -47,12 +48,13 @@ class _CustomTabsState extends State<CustomTabs>
             textStyle: const TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
-              color: Colors.white,
+              color: Color.fromARGB(255, 100, 160, 232),
             ),
           ),
         ),
         bottom: TabBar(
           indicatorWeight: 4.0,
+          indicatorColor: Color.fromARGB(255, 100, 160, 232),
           controller: _tabController,
           tabs: [
             Tab(
@@ -63,7 +65,7 @@ class _CustomTabsState extends State<CustomTabs>
                     textStyle: const TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
-                      color: Color.fromARGB(255, 233, 242, 255),
+                      color: Color.fromARGB(255, 100, 160, 232),
                     ),
                   ),
                 )),
@@ -75,7 +77,7 @@ class _CustomTabsState extends State<CustomTabs>
                     textStyle: const TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
-                      color: Color.fromARGB(255, 228, 238, 255),
+                      color: Color.fromARGB(255, 100, 160, 232),
                     ),
                   ),
                 )),
@@ -110,6 +112,7 @@ class _CustomTab1State extends State<CustomTab1> {
   TextEditingController _textEditingController = TextEditingController();
   String _displayText = '';
   bool _loadingState = false;
+  var prefixIconColor = const Color.fromARGB(192, 255, 255, 255);
 
   void _setCity() async {
     setState(() {
@@ -131,6 +134,21 @@ class _CustomTab1State extends State<CustomTab1> {
     super.dispose();
   }
 
+  void set_n_continue() {
+    setState(() {
+      _loadingState = true;
+      _displayText = _textEditingController.text;
+    });
+    print('Text from TextField: $_displayText');
+    Provider.of<DataModel>(context, listen: false).setCityName(_displayText);
+    setState(() {
+      _loadingState = false;
+    });
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+      return HomeScreen();
+    }));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<DataModel>(
@@ -140,43 +158,55 @@ class _CustomTab1State extends State<CustomTab1> {
             Padding(
                 padding: const EdgeInsets.only(
                     top: 140, bottom: 100, left: 40, right: 40),
-                child: TextField(
-                  controller: _textEditingController,
-                  decoration: const InputDecoration(
-                    focusColor: Colors.white,
-                    icon: Icon(
-                      Icons.location_on,
-                      size: 40,
+                child: Focus(
+                  onFocusChange: (hasFocus) {
+                    setState(() {
+                      prefixIconColor = hasFocus
+                          ? const Color.fromARGB(255, 255, 255, 255)
+                          : const Color.fromARGB(180, 255, 255, 255);
+                    });
+                  },
+                  child: TextField(
+                    controller: _textEditingController,
+                    decoration: InputDecoration(
+                      focusColor: Colors.white,
+                      icon: Icon(
+                        color: prefixIconColor,
+                        Icons.location_on,
+                        size: 40,
+                      ),
+                      labelText: 'Enter Your Location',
+                      hintText: 'Enter Your City/Town/Locality Name...',
+                      labelStyle: const TextStyle(
+                        color: Colors.white, // Label text color
+                      ),
+                      hintStyle: const TextStyle(
+                        color: Color.fromARGB(
+                            105, 255, 255, 255), // Hint text color
+                      ),
+                      enabledBorder: const UnderlineInputBorder(
+                        borderSide: BorderSide(
+                            width: 1.8,
+                            color: Color.fromARGB(136, 255, 255,
+                                255)), // Border color when not focused
+                      ),
+                      focusedBorder: const UnderlineInputBorder(
+                        borderSide: BorderSide(
+                            width: 2.5,
+                            color: Color.fromARGB(229, 255, 255,
+                                255)), // Border color when focused
+                      ),
                     ),
-                    labelText: 'Enter Your Location',
-                    hintText: 'Enter Your City/Town/Locality Name...',
-                    labelStyle: TextStyle(
-                      color: Colors.white, // Label text color
+                    style: GoogleFonts.poppins(
+                      fontSize: 22.0,
+                      fontWeight: FontWeight.normal,
+                      color: Colors.white,
                     ),
-                    hintStyle: TextStyle(
-                      color:
-                          Color.fromARGB(105, 255, 255, 255), // Hint text color
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                          color: Color.fromARGB(
-                              255, 255, 0, 0)), // Border color when not focused
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                          color: Color.fromARGB(
-                              255, 0, 255, 76)), // Border color when focused
-                    ),
+                    cursorColor: const Color.fromARGB(255, 255, 255, 255),
+                    keyboardType: TextInputType.text,
+                    maxLines: 1,
+                    textInputAction: TextInputAction.done,
                   ),
-                  style: GoogleFonts.poppins(
-                    fontSize: 22.0,
-                    fontWeight: FontWeight.normal,
-                    color: Colors.white,
-                  ),
-                  cursorColor: const Color.fromARGB(255, 255, 255, 255),
-                  keyboardType: TextInputType.text,
-                  maxLines: 1,
-                  textInputAction: TextInputAction.done,
                 )),
             Container(
               width: 240,
@@ -192,22 +222,7 @@ class _CustomTab1State extends State<CustomTab1> {
                         width: 3, color: Color.fromARGB(255, 255, 255, 255)),
                   ),
                 ),
-                onPressed: () {
-                  setState(() {
-                    _loadingState = true;
-                    _displayText = _textEditingController.text;
-                  });
-                  print('Text from TextField: $_displayText');
-                  Provider.of<DataModel>(context, listen: false)
-                      .setCityName(_displayText);
-                  setState(() {
-                    _loadingState = false;
-                  });
-                  Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (context) {
-                    return HomeScreen();
-                  }));
-                },
+                onPressed: set_n_continue,
                 child: Row(
                   children: [
                     _loadingState
@@ -336,13 +351,22 @@ class _CustomTab2State extends State<CustomTab2> {
                       textStyle: const TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
-                        color: Color.fromARGB(255, 174, 255, 177),
+                        color: Color.fromARGB(255, 118, 252, 122),
                       ),
                     ),
                   )
                 : Container(),
             showError && !_loadingState
-                ? Text("Error in getting location!")
+                ? Text(
+                    "Error in getting location!",
+                    style: GoogleFonts.notoSans(
+                      textStyle: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Color.fromARGB(255, 255, 143, 143),
+                      ),
+                    ),
+                  )
                 : Container(),
             showContinueButton && !_loadingState
                 ? Container(
