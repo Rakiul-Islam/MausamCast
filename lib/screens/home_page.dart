@@ -16,8 +16,127 @@ String capitalizeWords(String input) {
   return words.join(' ');
 }
 
-class HomeScreen extends StatelessWidget {
+// class HomeScreen extends StatelessWidget {
+//   const HomeScreen({super.key});
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Consumer<DataModel>(builder: (context, value, child) {
+//       return Scaffold(
+//         backgroundColor: Color.fromARGB(255, 0, 29, 66),
+//         extendBodyBehindAppBar: true,
+//         appBar: AppBar(
+//           backgroundColor: Colors.transparent,
+//           shadowColor: Colors.transparent,
+//           leading: BackButton(
+//             onPressed: () {
+//               Navigator.pushReplacement(context,
+//                   MaterialPageRoute(builder: (context) {
+//                 return SetLocationPage();
+//               }));
+//             },
+//           ),
+//         ),
+//         body: value.dataFetchedOnce
+//             ? const Padding(
+//                 padding: EdgeInsets.only(top: 20), child: HomePageLayout())
+//             : FutureBuilder<int>(
+//                 future: Provider.of<DataModel>(context, listen: false)
+//                     .fetchBothData(),
+//                 builder: (context, snapshot) {
+//                   switch (snapshot.connectionState) {
+//                     case ConnectionState.done:
+//                       print("from fetchData : ${snapshot.data}");
+//                       if (snapshot.data == 0) {
+//                         return const Padding(
+//                             padding: EdgeInsets.only(top: 20),
+//                             child: HomePageLayout());
+//                       } else {
+//                         return Align(
+//                           alignment: Alignment.center,
+//                           child: SingleChildScrollView(
+//                             scrollDirection: Axis.horizontal,
+//                             child: Container(
+//                               width: 980,
+//                               height: 60,
+//                               child: Row(
+//                                 children: [
+//                                   const Icon(
+//                                     color: Color.fromARGB(255, 250, 137, 129),
+//                                     Icons.error,
+//                                     size: 50,
+//                                   ),
+//                                   Text(
+//                                     "  Problem in fetching data from server...Did you set the location correctly?",
+//                                     style: GoogleFonts.notoSans(
+//                                       textStyle: const TextStyle(
+//                                         fontSize: 25,
+//                                         fontWeight: FontWeight.bold,
+//                                         color:
+//                                             Color.fromARGB(255, 196, 192, 192),
+//                                       ),
+//                                     ),
+//                                   ),
+//                                 ],
+//                               ),
+//                             ),
+//                           ),
+//                         );
+//                       }
+
+//                     default:
+//                       return Align(
+//                         alignment: Alignment.center,
+//                         child: Container(
+//                           width: 250,
+//                           height: 60,
+//                           child: Row(
+//                             children: [
+//                               const CircularProgressIndicator(
+//                                 strokeWidth: 5,
+//                                 color: Colors.white,
+//                               ),
+//                               Text(
+//                                 "  Loading...",
+//                                 style: GoogleFonts.notoSans(
+//                                   textStyle: const TextStyle(
+//                                     fontSize: 30,
+//                                     fontWeight: FontWeight.bold,
+//                                     color: Color.fromARGB(255, 255, 255, 255),
+//                                   ),
+//                                 ),
+//                               ),
+//                             ],
+//                           ),
+//                         ),
+//                       );
+//                   }
+//                 },
+//               ),
+//       );
+//     });
+//   }
+// }
+
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  late final Future<int> myFuture;
+
+  @override
+  void initState() {
+    myFuture = Provider.of<DataModel>(context, listen: false).fetchBothData();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,8 +160,7 @@ class HomeScreen extends StatelessWidget {
             ? const Padding(
                 padding: EdgeInsets.only(top: 20), child: HomePageLayout())
             : FutureBuilder<int>(
-                future: Provider.of<DataModel>(context, listen: false)
-                    .fetchWeatherData(),
+                future: myFuture,
                 builder: (context, snapshot) {
                   switch (snapshot.connectionState) {
                     case ConnectionState.done:
@@ -187,7 +305,6 @@ class _WeatherDataTileState extends State<WeatherDataTile> {
       } else if (imageName >= 13 && imageName < 50) {
         imageName = 13;
       }
-      print("$imageName and $imageNameMode");
       return Container(
         width: 580,
         height: 240,
@@ -195,7 +312,9 @@ class _WeatherDataTileState extends State<WeatherDataTile> {
           alignment: Alignment.center,
           child: AnimatedContainer(
             decoration: BoxDecoration(
-              color: isHovered ? Colors.transparent : bgcolor,
+              color: isHovered
+                  ? Color.fromARGB(0, bgcolor.red, bgcolor.green, bgcolor.blue)
+                  : bgcolor,
               borderRadius: BorderRadius.circular(20),
             ),
             duration: const Duration(milliseconds: 180),
@@ -336,12 +455,16 @@ class _statGraphState extends State<StatGraph> {
       List<FlSpot> dataList = [];
       List<Color> dataListColors = [];
       List<String> dateList = [];
-      int maxX = 0;
-      for (int i = value.weatherData.length - 1; i >= 0; i--) {
+      int maxX =
+          (value.weatherData.length > 20) ? (20) : (value.weatherData.length);
+      int c = 0;
+      for (int i = value.weatherData.length - maxX;
+          i < value.weatherData.length;
+          i++) {
         try {
           var avgTemp = value.weatherData[i].temperatureValue - 273.00;
-          dataList.add(FlSpot(
-              maxX.toDouble(), double.parse((avgTemp).toStringAsFixed(2))));
+          dataList.add(
+              FlSpot(c.toDouble(), double.parse((avgTemp).toStringAsFixed(2))));
           var temp =
               (avgTemp > 45) ? (45) : ((avgTemp < 10) ? (10) : (avgTemp));
           dataListColors.add(Color.fromARGB(
@@ -350,18 +473,37 @@ class _statGraphState extends State<StatGraph> {
               ((45 - temp) * (255 / 35) * (0.5)).round(),
               ((45 - temp) * (255 / 35)).round()));
           dateList.add(value.weatherData[i].dateTime);
-          maxX++;
-          if (maxX == 20) {
-            break;
-          }
+          c++;
         } catch (e) {
           print(e);
         }
       }
-
+      /*
+        // for (int i = value.weatherData.length - 1; i >= 0; i--) {
+        //   try {
+        //     var avgTemp = value.weatherData[i].temperatureValue - 273.00;
+        //     dataList.add(FlSpot(
+        //         maxX.toDouble(), double.parse((avgTemp).toStringAsFixed(2))));
+        //     var temp =
+        //         (avgTemp > 45) ? (45) : ((avgTemp < 10) ? (10) : (avgTemp));
+        //     dataListColors.add(Color.fromARGB(
+        //         255,
+        //         ((temp - 10) * (255 / 35)).round(),
+        //         ((45 - temp) * (255 / 35) * (0.5)).round(),
+        //         ((45 - temp) * (255 / 35)).round()));
+        //     dateList.add(value.weatherData[i].dateTime);
+        //     maxX++;
+        //     if (maxX == 20) {
+        //       break;
+        //     }
+        //   } catch (e) {
+        //     print(e);
+        //   }
+        // }
+      */
       return Container(
         width: 500,
-        height: 360,
+        height: 320,
         child: LineChart(
           LineChartData(
             gridData: FlGridData(show: false),
@@ -378,7 +520,7 @@ class _statGraphState extends State<StatGraph> {
             minX: 0,
             maxX: maxX.toDouble() - 1.0,
             minY: 0,
-            maxY: 50,
+            maxY: 40,
             lineTouchData: LineTouchData(
               touchTooltipData: LineTouchTooltipData(
                 tooltipBgColor: const Color.fromARGB(188, 255, 255, 255),
@@ -458,57 +600,188 @@ class ForecastTilesView extends StatefulWidget {
 }
 
 class _ForecastTilesViewState extends State<ForecastTilesView> {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 750,
-      height: 650,
-      color: Colors.amber,
-    );
-  }
-}
-
-class ButtonStack extends StatefulWidget {
-  @override
-  _ButtonStackState createState() => _ButtonStackState();
-}
-
-class _ButtonStackState extends State<ButtonStack> {
   int hoveredButtonIndex = -1;
-
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: <Widget>[
-        for (int i = 0; i < 3; i++)
-          AnimatedContainer(
-            duration: const Duration(milliseconds: 300),
-            width: i == hoveredButtonIndex ? 150.0 : 100.0,
-            height: i == hoveredButtonIndex ? 60.0 : 40.0,
-            color: i == hoveredButtonIndex ? Colors.blue : Colors.grey,
-            child: MouseRegion(
-              onEnter: (_) {
-                setState(() {
-                  hoveredButtonIndex = i;
-                });
-              },
-              onExit: (_) {
-                setState(() {
-                  hoveredButtonIndex = -1;
-                });
-              },
-              child: Center(
-                child: Text(
-                  'Button $i',
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
+    return Consumer<DataModel>(builder: (context, value, child) {
+      return Container(
+          width: 760,
+          height: 650,
+          child: ListView.builder(
+            padding: EdgeInsets.zero,
+            itemCount: 7,
+            itemBuilder: (BuildContext context, int index) {
+              bool isHovered = index == hoveredButtonIndex;
+              ForecastData currForecastData = value.forecastData[index];
+              List dateTime = currForecastData.from.split(" ");
+              var avgTemp = (currForecastData.tempValue - 273.00).round();
+              var maxTemp = currForecastData.tempMax - 273;
+              var minTemp = currForecastData.tempMin - 273;
+              var temp =
+                  (avgTemp > 45) ? (45) : ((avgTemp < 10) ? (10) : (avgTemp));
+              var bgcolor = Color.fromARGB(
+                  255,
+                  ((temp - 10) * (255 / 35)).round(),
+                  ((45 - temp) * (255 / 35) * (0.5)).round(),
+                  ((45 - temp) * (255 / 35)).round());
+              int imageName = int.parse(currForecastData.symbolVar
+                  .substring(0, currForecastData.symbolVar.length - 1));
+              String imageNameMode = currForecastData.symbolVar.substring(
+                  currForecastData.symbolVar.length - 1,
+                  currForecastData.symbolVar.length);
+              imageNameMode = (int.parse(dateTime[4].split(":")[0]) >= 6 &&
+                      int.parse(dateTime[4].split(":")[0]) <= 18)
+                  ? ("d")
+                  : ("n");
+              if (imageName >= 4 && imageName < 9) {
+                imageName = 4;
+              } else if (imageName >= 11 && imageName < 13) {
+                imageName = 11;
+              } else if (imageName >= 13 && imageName < 50) {
+                imageName = 13;
+              }
+              return Padding(
+                padding:
+                    const EdgeInsets.only(top: 2, bottom: 2, left: 1, right: 1),
+                child: Center(
+                  child: AnimatedContainer(
+                    decoration: BoxDecoration(
+                      color: (isHovered)
+                          ? Color.fromARGB((bgcolor.alpha * 0.5).toInt(),
+                              bgcolor.red, bgcolor.green, bgcolor.blue)
+                          : bgcolor,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    duration: const Duration(milliseconds: 300),
+                    width: (index == hoveredButtonIndex) ? 760 : 720,
+                    height: (hoveredButtonIndex != -1)
+                        ? (index == hoveredButtonIndex ? 110 : 84)
+                        : (88),
+                    child: MouseRegion(
+                        onEnter: (_) {
+                          setState(() {
+                            hoveredButtonIndex = index;
+                          });
+                        },
+                        onExit: (_) {
+                          setState(() {
+                            hoveredButtonIndex = -1;
+                          });
+                        },
+                        child: Stack(children: [
+                          Positioned(
+                            left: 40,
+                            top: (isHovered) ? 12 : 12,
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                "${dateTime[4].split(":")[0]} : ${dateTime[4].split(":")[1]}",
+                                style: GoogleFonts.notoSans(
+                                  textStyle: TextStyle(
+                                      fontSize: (isHovered) ? 40 : 44,
+                                      fontWeight: FontWeight.bold,
+                                      color: const Color.fromARGB(
+                                          255, 255, 255, 255)),
+                                ),
+                              ),
+                            ),
+                          ),
+                          (isHovered)
+                              ? (Positioned(
+                                  left: 40,
+                                  top: 60,
+                                  child: Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Text(
+                                      "${dateTime[0]} ${dateTime[1]} ${dateTime[2]} ${dateTime[3]}",
+                                      style: GoogleFonts.notoSans(
+                                        textStyle: const TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold,
+                                            color: Color.fromARGB(
+                                                255, 255, 255, 255)),
+                                      ),
+                                    ),
+                                  ),
+                                ))
+                              : (Container()),
+                          Positioned(
+                              left: isHovered ? 240 : 300,
+                              top: isHovered ? 25 : 20,
+                              child: Text(
+                                isHovered
+                                    ? "${minTemp.toStringAsFixed(2)} - ${maxTemp.toStringAsFixed(2)} °C"
+                                    : "$avgTemp °C",
+                                style: GoogleFonts.notoSans(
+                                  textStyle: const TextStyle(
+                                      fontSize: 38,
+                                      fontWeight: FontWeight.bold,
+                                      color:
+                                          Color.fromARGB(255, 255, 255, 255)),
+                                ),
+                              )),
+                          Positioned(
+                            right: 40,
+                            bottom: 10,
+                            child: Image.asset(
+                              imageName <= 9
+                                  ? 'lib/images/icons/0$imageName$imageNameMode.png'
+                                  : 'lib/images/icons/$imageName$imageNameMode.png',
+                              width: isHovered ? 60 : 70,
+                              height: isHovered ? 60 : 70,
+                              errorBuilder: (BuildContext context,
+                                  Object exception, StackTrace? stackTrace) {
+                                return Image.asset(
+                                  'lib/images/icons/notFound.png',
+                                  width: isHovered ? 60 : 70,
+                                  height: isHovered ? 60 : 70,
+                                );
+                              },
+                            ),
+                          ),
+                          isHovered
+                              ? (Positioned(
+                                  right: 40,
+                                  top: 10,
+                                  child: Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Text(
+                                      "Humidity: ${currForecastData.humidityValue}${currForecastData.humidityUnit}",
+                                      style: GoogleFonts.notoSans(
+                                        textStyle: const TextStyle(
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.bold,
+                                            color: Color.fromARGB(
+                                                255, 255, 255, 255)),
+                                      ),
+                                    ),
+                                  ),
+                                ))
+                              : (Container()),
+                          Positioned(
+                            right: 120,
+                            bottom: 13,
+                            child: Text(
+                              isHovered
+                                  ? capitalizeWords(currForecastData.symbolName)
+                                      .replaceAll(" ", "\n")
+                                  : capitalizeWords(
+                                      currForecastData.symbolName),
+                              style: GoogleFonts.notoSans(
+                                textStyle: TextStyle(
+                                    fontSize: isHovered ? 15 : 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: const Color.fromARGB(
+                                        255, 255, 255, 255)),
+                              ),
+                            ),
+                          ),
+                        ])),
                   ),
                 ),
-              ),
-            ),
-          ),
-      ],
-    );
+              );
+            },
+          ));
+    });
   }
 }

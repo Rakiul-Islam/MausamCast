@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:my_weather_app/modules/data_model.dart';
-import 'package:my_weather_app/screens/home_page.dart';
 import 'package:my_weather_app/screens/set_location_page.dart';
 import 'package:provider/provider.dart';
 

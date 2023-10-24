@@ -179,37 +179,38 @@ class ForecastData {
 
   factory ForecastData.fromJson(Map<String, dynamic> json) {
     return ForecastData(
-      cloudsAll: json['clouds_all'],
-      cloudsUnit: json['clouds_unit'],
-      cloudsValue: json['clouds_value'],
-      feelsLikeUnit: json['feels_like_unit'],
-      feelsLikeValue: json['feels_like_value'].toDouble(),
-      from: json['from'],
-      humidityUnit: json['humidity_unit'],
-      humidityValue: json['humidity_value'],
-      precipitationProbability: json['precipitation_probability'].toDouble(),
-      precipitationType: json['precipitation_type'],
-      precipitationUnit: json['precipitation_unit'],
-      precipitationValue: json['precipitation_value'].toDouble(),
-      pressureUnit: json['pressure_unit'],
-      pressureValue: json['pressure_value'],
-      symbolName: json['symbol_name'],
-      symbolNumber: json['symbol_number'],
-      symbolVar: json['symbol_var'],
-      tempMax: json['temperature_max'].toDouble(),
-      tempMin: json['temperature_min'].toDouble(),
-      tempUnit: json['temperature_unit'],
-      tempValue: json['temperature_value'].toDouble(),
-      to: json['to'],
-      visibilityValue: json['visibility_value'],
-      windDirectionCode: json['windDirection_code'],
-      windDirectionDeg: json['windDirection_deg'],
-      windDirectionName: json['windDirection_name'],
-      windGustGust: json['windGust_gust'].toDouble(),
-      windGustUnit: json['windGust_unit'],
-      windSpeedMps: json['windSpeed_mps'].toDouble(),
-      windSpeedName: json['windSpeed_name'],
-      windSpeedUnit: json['windSpeed_unit'],
+      cloudsAll: json['clouds_all'] ?? 0,
+      cloudsUnit: json['clouds_unit'] ?? '',
+      cloudsValue: json['clouds_value'] ?? '',
+      feelsLikeUnit: json['feels_like_unit'] ?? '',
+      feelsLikeValue: (json['feels_like_value'] as double?) ?? 0.0,
+      from: json['from_'] ?? '',
+      humidityUnit: json['humidity_unit'] ?? '',
+      humidityValue: json['humidity_value'] ?? 0,
+      precipitationProbability:
+          (json['precipitation_probability'] as double?) ?? 0.0,
+      precipitationType: json['precipitation_type'] ?? '',
+      precipitationUnit: json['precipitation_unit'] ?? '',
+      precipitationValue: (json['precipitation_value'] as double?) ?? 0.0,
+      pressureUnit: json['pressure_unit'] ?? '',
+      pressureValue: json['pressure_value'] ?? 0,
+      symbolName: json['symbol_name'] ?? '',
+      symbolNumber: json['symbol_number'] ?? 0,
+      symbolVar: json['symbol_var'] ?? '',
+      tempMax: (json['temperature_max'] as double?) ?? 0.0,
+      tempMin: (json['temperature_min'] as double?) ?? 0.0,
+      tempUnit: json['temperature_unit'] ?? '',
+      tempValue: (json['temperature_value'] as double?) ?? 0.0,
+      to: json['to_'] ?? '',
+      visibilityValue: json['visibility_value'] ?? 0,
+      windDirectionCode: json['windDirection_code'] ?? '',
+      windDirectionDeg: json['windDirection_deg'] ?? 0,
+      windDirectionName: json['windDirection_name'] ?? '',
+      windGustGust: (json['windGust_gust'] as double?) ?? 0.0,
+      windGustUnit: json['windGust_unit'] ?? '',
+      windSpeedMps: (json['windSpeed_mps'] as double?) ?? 0.0,
+      windSpeedName: json['windSpeed_name'] ?? '',
+      windSpeedUnit: json['windSpeed_unit'] ?? '',
     );
   }
 }
@@ -273,8 +274,6 @@ class DataModel extends ChangeNotifier {
         weatherData = [];
         return 1;
       }
-
-      dataFetchedOnce = true;
       notifyListeners();
       return 0;
     } else {
@@ -292,14 +291,33 @@ class DataModel extends ChangeNotifier {
         print("Error in fetching data from python server.");
         return 1;
       }
-      final List<dynamic> parsedJson = jsonDecode(response.body.toString());
-      forecastData =
-          parsedJson.map((json) => ForecastData.fromJson(json)).toList();
-      dataFetchedOnce = true;
+      String jsonString = response.body.toString().replaceAll("NaN", "null");
+      try {
+        final List<dynamic> jsonList = json.decode(jsonString);
+        forecastData =
+            jsonList.map((json) => ForecastData.fromJson(json)).toList();
+      } catch (e) {
+        print('Error decoding JSON: $e');
+        weatherData = [];
+        return 1;
+      }
+      print("forcast data has ${forecastData.length} items ");
       notifyListeners();
       return 0;
     } else {
       forecastData = [];
+      return 1;
+    }
+  }
+
+  Future<int> fetchBothData() async {
+    try {
+      await fetchWeatherData();
+      await fetchForecastData();
+      dataFetchedOnce = true;
+      return 0;
+    } catch (e) {
+      print('Error : ${e}');
       return 1;
     }
   }
