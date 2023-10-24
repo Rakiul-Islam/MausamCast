@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:my_weather_app/modules/data_model.dart';
@@ -60,7 +63,7 @@ class _CustomTabsState extends State<CustomTabs>
             Tab(
                 height: 70,
                 child: Text(
-                  'Enter Location Yourself',
+                  !kIsWeb ? 'Enter' : 'Enter Location Yourself',
                   style: GoogleFonts.notoSans(
                     textStyle: const TextStyle(
                       fontSize: 20,
@@ -72,7 +75,7 @@ class _CustomTabsState extends State<CustomTabs>
             Tab(
                 height: 70,
                 child: Text(
-                  'Get Location through Geolocate',
+                  !kIsWeb ? 'Geolocate' : 'Get Location through Geolocate',
                   style: GoogleFonts.notoSans(
                     textStyle: const TextStyle(
                       fontSize: 20,
@@ -85,6 +88,7 @@ class _CustomTabsState extends State<CustomTabs>
         ),
       ),
       backgroundColor: Color.fromARGB(255, 0, 77, 172),
+      extendBodyBehindAppBar: true,
       body: TabBarView(
         controller: _tabController,
         children: [
@@ -153,102 +157,105 @@ class _CustomTab1State extends State<CustomTab1> {
   Widget build(BuildContext context) {
     return Consumer<DataModel>(
       builder: (context, value, child) {
-        return Column(
-          children: [
-            Padding(
-                padding: const EdgeInsets.only(
-                    top: 140, bottom: 100, left: 40, right: 40),
-                child: Focus(
-                  onFocusChange: (hasFocus) {
-                    setState(() {
-                      prefixIconColor = hasFocus
-                          ? const Color.fromARGB(255, 255, 255, 255)
-                          : const Color.fromARGB(180, 255, 255, 255);
-                    });
-                  },
-                  child: TextField(
-                    controller: _textEditingController,
-                    decoration: InputDecoration(
-                      focusColor: Colors.white,
-                      icon: Icon(
-                        color: prefixIconColor,
-                        Icons.location_on,
-                        size: 40,
-                      ),
-                      labelText: 'Enter Your Location',
-                      hintText: 'Enter Your City/Town/Locality Name...',
-                      labelStyle: const TextStyle(
-                        color: Colors.white, // Label text color
-                      ),
-                      hintStyle: const TextStyle(
-                        color: Color.fromARGB(
-                            105, 255, 255, 255), // Hint text color
-                      ),
-                      enabledBorder: const UnderlineInputBorder(
-                        borderSide: BorderSide(
-                            width: 1.8,
-                            color: Color.fromARGB(136, 255, 255,
-                                255)), // Border color when not focused
-                      ),
-                      focusedBorder: const UnderlineInputBorder(
-                        borderSide: BorderSide(
-                            width: 2.5,
-                            color: Color.fromARGB(229, 255, 255,
-                                255)), // Border color when focused
-                      ),
-                    ),
-                    style: GoogleFonts.poppins(
-                      fontSize: 22.0,
-                      fontWeight: FontWeight.normal,
-                      color: Colors.white,
-                    ),
-                    cursorColor: const Color.fromARGB(255, 255, 255, 255),
-                    keyboardType: TextInputType.text,
-                    maxLines: 1,
-                    textInputAction: TextInputAction.done,
-                  ),
-                )),
-            Container(
-              width: 240,
-              height: 50,
-              child: ElevatedButton(
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all<Color>(
-                      Color.fromARGB(0, 0, 0, 0)),
-                  shadowColor: MaterialStateProperty.all<Color>(
-                      Color.fromARGB(0, 0, 0, 0)),
-                  side: MaterialStateProperty.all<BorderSide>(
-                    const BorderSide(
-                        width: 3, color: Color.fromARGB(255, 255, 255, 255)),
-                  ),
-                ),
-                onPressed: set_n_continue,
-                child: Row(
-                  children: [
-                    _loadingState
-                        ? const CircularProgressIndicator(
-                            color: Colors.white,
-                          )
-                        : const Icon(
-                            color: Colors.white,
-                            Icons.sell_rounded,
-                            size: 25,
-                          ),
-                    Text(
-                      '    Set & Continue',
-                      style: GoogleFonts.notoSans(
-                        textStyle: const TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
+        return SingleChildScrollView(
+          padding: const EdgeInsets.only(top: 0),
+          child: Column(
+            children: [
+              Padding(
+                  padding: EdgeInsets.only(
+                      top: !kIsWeb ? 0 : 140, bottom: 100, left: 40, right: 40),
+                  child: Focus(
+                    onFocusChange: (hasFocus) {
+                      setState(() {
+                        prefixIconColor = hasFocus
+                            ? const Color.fromARGB(255, 255, 255, 255)
+                            : const Color.fromARGB(180, 255, 255, 255);
+                      });
+                    },
+                    child: TextField(
+                      controller: _textEditingController,
+                      decoration: InputDecoration(
+                        focusColor: Colors.white,
+                        icon: Icon(
+                          color: prefixIconColor,
+                          Icons.location_on,
+                          size: 40,
+                        ),
+                        labelText: 'Enter Your Location',
+                        hintText: 'Enter Your City/Town/Locality Name...',
+                        labelStyle: const TextStyle(
+                          color: Colors.white, // Label text color
+                        ),
+                        hintStyle: const TextStyle(
+                          color: Color.fromARGB(
+                              105, 255, 255, 255), // Hint text color
+                        ),
+                        enabledBorder: const UnderlineInputBorder(
+                          borderSide: BorderSide(
+                              width: 1.8,
+                              color: Color.fromARGB(136, 255, 255,
+                                  255)), // Border color when not focused
+                        ),
+                        focusedBorder: const UnderlineInputBorder(
+                          borderSide: BorderSide(
+                              width: 2.5,
+                              color: Color.fromARGB(229, 255, 255,
+                                  255)), // Border color when focused
                         ),
                       ),
+                      style: GoogleFonts.poppins(
+                        fontSize: 22.0,
+                        fontWeight: FontWeight.normal,
+                        color: Colors.white,
+                      ),
+                      cursorColor: const Color.fromARGB(255, 255, 255, 255),
+                      keyboardType: TextInputType.text,
+                      maxLines: 1,
+                      textInputAction: TextInputAction.done,
                     ),
-                  ],
+                  )),
+              Container(
+                width: 240,
+                height: 50,
+                child: ElevatedButton(
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all<Color>(
+                        Color.fromARGB(0, 0, 0, 0)),
+                    shadowColor: MaterialStateProperty.all<Color>(
+                        Color.fromARGB(0, 0, 0, 0)),
+                    side: MaterialStateProperty.all<BorderSide>(
+                      const BorderSide(
+                          width: 3, color: Color.fromARGB(255, 255, 255, 255)),
+                    ),
+                  ),
+                  onPressed: set_n_continue,
+                  child: Row(
+                    children: [
+                      _loadingState
+                          ? const CircularProgressIndicator(
+                              color: Colors.white,
+                            )
+                          : const Icon(
+                              color: Colors.white,
+                              Icons.sell_rounded,
+                              size: 25,
+                            ),
+                      Text(
+                        '    Set & Continue',
+                        style: GoogleFonts.notoSans(
+                          textStyle: const TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         );
       },
     );
@@ -276,144 +283,148 @@ class _CustomTab2State extends State<CustomTab2> {
   Widget build(BuildContext context) {
     return Consumer<DataModel>(
       builder: (context, value, child) {
-        return Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(
-                  top: 140, bottom: 100, left: 40, right: 40),
-              child: Container(
-                width: 190,
-                height: 50,
-                child: ElevatedButton(
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all<Color>(
-                        Color.fromARGB(0, 0, 0, 0)),
-                    shadowColor: MaterialStateProperty.all<Color>(
-                        Color.fromARGB(0, 0, 0, 0)),
-                    side: MaterialStateProperty.all<BorderSide>(
-                      const BorderSide(
-                          width: 3, color: Color.fromARGB(255, 255, 255, 255)),
+        return SingleChildScrollView(
+          child: Column(
+            children: [
+              Padding(
+                padding: EdgeInsets.only(
+                    top: !kIsWeb ? 0 : 140, bottom: 100, left: 40, right: 40),
+                child: Container(
+                  width: 190,
+                  height: 50,
+                  child: ElevatedButton(
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all<Color>(
+                          Color.fromARGB(0, 0, 0, 0)),
+                      shadowColor: MaterialStateProperty.all<Color>(
+                          Color.fromARGB(0, 0, 0, 0)),
+                      side: MaterialStateProperty.all<BorderSide>(
+                        const BorderSide(
+                            width: 3,
+                            color: Color.fromARGB(255, 255, 255, 255)),
+                      ),
                     ),
-                  ),
-                  onPressed: () async {
-                    setState(() {
-                      _loadingState = true;
-                    });
-                    int x = await Provider.of<DataModel>(context, listen: false)
-                        .setCityNameGeolocate();
-                    print("x = $x");
-                    if (x == 0) {
+                    onPressed: () async {
                       setState(() {
-                        showGetCitySuccess = true;
-                        showContinueButton = true;
-                        showError = false;
+                        _loadingState = true;
                       });
-                    } else {
+                      int x =
+                          await Provider.of<DataModel>(context, listen: false)
+                              .setCityNameGeolocate();
+                      print("x = $x");
+                      if (x == 0) {
+                        setState(() {
+                          showGetCitySuccess = true;
+                          showContinueButton = true;
+                          showError = false;
+                        });
+                      } else {
+                        setState(() {
+                          showGetCitySuccess = false;
+                          showContinueButton = false;
+                          showError = true;
+                        });
+                      }
                       setState(() {
-                        showGetCitySuccess = false;
-                        showContinueButton = false;
-                        showError = true;
+                        _loadingState = false;
                       });
-                    }
-                    setState(() {
-                      _loadingState = false;
-                    });
-                  },
-                  child: Row(
-                    children: [
-                      _loadingState
-                          ? const CircularProgressIndicator(
+                    },
+                    child: Row(
+                      children: [
+                        _loadingState
+                            ? const CircularProgressIndicator(
+                                color: Colors.white,
+                              )
+                            : const Icon(
+                                Icons.location_on,
+                                size: 30,
+                              ),
+                        Text(
+                          '  Geolocate',
+                          style: GoogleFonts.notoSans(
+                            textStyle: const TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
                               color: Colors.white,
-                            )
-                          : const Icon(
-                              Icons.location_on,
-                              size: 30,
                             ),
-                      Text(
-                        '  Geolocate',
-                        style: GoogleFonts.notoSans(
-                          textStyle: const TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-            showGetCitySuccess && !_loadingState
-                ? Text(
-                    "Set Location to ${value.cityName} ?\n",
-                    style: GoogleFonts.notoSans(
-                      textStyle: const TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Color.fromARGB(255, 118, 252, 122),
-                      ),
-                    ),
-                  )
-                : Container(),
-            showError && !_loadingState
-                ? Text(
-                    "Error in getting location!",
-                    style: GoogleFonts.notoSans(
-                      textStyle: const TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Color.fromARGB(255, 255, 143, 143),
-                      ),
-                    ),
-                  )
-                : Container(),
-            showContinueButton && !_loadingState
-                ? Container(
-                    width: 240,
-                    height: 50,
-                    child: ElevatedButton(
-                      style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all<Color>(
-                            Color.fromARGB(0, 0, 0, 0)),
-                        shadowColor: MaterialStateProperty.all<Color>(
-                            Color.fromARGB(0, 0, 0, 0)),
-                        side: MaterialStateProperty.all<BorderSide>(
-                          const BorderSide(
-                              width: 3,
-                              color: Color.fromARGB(255, 255, 255, 255)),
+              showGetCitySuccess && !_loadingState
+                  ? Text(
+                      "Set Location to ${value.cityName} ?\n",
+                      style: GoogleFonts.notoSans(
+                        textStyle: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Color.fromARGB(255, 118, 252, 122),
                         ),
                       ),
-                      onPressed: () {
-                        Navigator.pushReplacement(context,
-                            MaterialPageRoute(builder: (context) {
-                          return HomeScreen();
-                        }));
-                      },
-                      child: Row(
-                        children: [
-                          _loadingState
-                              ? const Icon(Icons.abc)
-                              : const Icon(
-                                  Icons.sell_rounded,
-                                  size: 25,
+                    )
+                  : Container(),
+              showError && !_loadingState
+                  ? Text(
+                      "Error in getting location!",
+                      style: GoogleFonts.notoSans(
+                        textStyle: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Color.fromARGB(255, 255, 143, 143),
+                        ),
+                      ),
+                    )
+                  : Container(),
+              showContinueButton && !_loadingState
+                  ? Container(
+                      width: 240,
+                      height: 50,
+                      child: ElevatedButton(
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all<Color>(
+                              Color.fromARGB(0, 0, 0, 0)),
+                          shadowColor: MaterialStateProperty.all<Color>(
+                              Color.fromARGB(0, 0, 0, 0)),
+                          side: MaterialStateProperty.all<BorderSide>(
+                            const BorderSide(
+                                width: 3,
+                                color: Color.fromARGB(255, 255, 255, 255)),
+                          ),
+                        ),
+                        onPressed: () {
+                          Navigator.pushReplacement(context,
+                              MaterialPageRoute(builder: (context) {
+                            return HomeScreen();
+                          }));
+                        },
+                        child: Row(
+                          children: [
+                            _loadingState
+                                ? const Icon(Icons.abc)
+                                : const Icon(
+                                    Icons.sell_rounded,
+                                    size: 25,
+                                  ),
+                            Text(
+                              '    Set & Continue',
+                              style: GoogleFonts.notoSans(
+                                textStyle: const TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
                                 ),
-                          Text(
-                            '    Set & Continue',
-                            style: GoogleFonts.notoSans(
-                              textStyle: const TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                  )
-                : Container(),
-          ],
+                    )
+                  : Container(),
+            ],
+          ),
         );
       },
     );

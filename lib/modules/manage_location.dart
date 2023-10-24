@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:geolocator/geolocator.dart';
-import 'package:geocoding/geocoding.dart';
 import 'package:http/http.dart' as http;
 
 Future<String> getCityName_() async {
@@ -10,6 +9,7 @@ Future<String> getCityName_() async {
 
   if (isLocationServiceEnabled) {
     // Request permission to access the location
+    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
     LocationPermission permission = await Geolocator.requestPermission();
 
     if (permission == LocationPermission.denied) {
