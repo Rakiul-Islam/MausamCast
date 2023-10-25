@@ -88,7 +88,7 @@ class _CustomTabsState extends State<CustomTabs>
         ),
       ),
       backgroundColor: Color.fromARGB(255, 0, 77, 172),
-      extendBodyBehindAppBar: true,
+      extendBodyBehindAppBar: (!kIsWeb) ? false : true,
       body: TabBarView(
         controller: _tabController,
         children: [

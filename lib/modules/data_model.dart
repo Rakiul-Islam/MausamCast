@@ -345,19 +345,40 @@ class DataModel extends ChangeNotifier {
     }
   }
 
-  // Future<int> fetchBothData() async {
-  //   try {
-  //     await fetchWeatherData();
-  //     await fetchForecastData();
-  //     dataFetchedOnce = true;
-  //     return 0;
-  //   } catch (e) {
-  //     print('Error : ${e}');
-  //     return 1;
-  //   }
-  // }
-
   Future<int> fetchBothDataRemote() async {
+    // get forecastData from the flask server and set it onto the getter variable
+    final response = await http.get(Uri.parse(
+        'http://10.3.15.93:5000/api/weather_n_forecast?city_name=${cityName.toLowerCase()}'));
+    if (response.statusCode == 200) {
+      if (response.body.toString() == "\"error\"") {
+        print("Error in fetching data from python server.");
+        return 1;
+      }
+      String jsonString = response.body.toString().replaceAll("NaN", "null");
+
+      try {
+        final Map<String, dynamic> jsonData = json.decode(jsonString);
+        final List<dynamic> weatherList = jsonData['weather_data'];
+        final List<dynamic> forecastList = jsonData['forecast_data'];
+        weatherData =
+            weatherList.map((json) => WeatherData.fromJson(json)).toList();
+        forecastData =
+            forecastList.map((json) => ForecastData.fromJson(json)).toList();
+      } catch (e) {
+        print('Error decoding JSON: $e');
+        weatherData = [];
+        return 1;
+      }
+      print("forcast data has ${forecastData.length} items ");
+      notifyListeners();
+      return 0;
+    } else {
+      forecastData = [];
+      return 1;
+    }
+  }
+
+  Future<int> fetchBothDataJsonBin() async {
     // get forecastData from jsonbin.io and set it onto the getter variable
     final binId = '6537c76012a5d376598fe229'; // Replace with the actual bin ID
     final apiUrl = 'https://api.jsonbin.io/v3/b/$binId';
@@ -404,4 +425,16 @@ class DataModel extends ChangeNotifier {
       return 1;
     }
   }
+
+  // Future<int> fetchBothData() async {
+  //   try {
+  //     await fetchWeatherData();
+  //     await fetchForecastData();
+  //     dataFetchedOnce = true;
+  //     return 0;
+  //   } catch (e) {
+  //     print('Error : ${e}');
+  //     return 1;
+  //   }
+  // }
 }

@@ -32,9 +32,11 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     if (!kIsWeb) {
+      // for Phone
       myFuture =
           Provider.of<DataModel>(context, listen: false).fetchBothDataRemote();
     } else {
+      // for Web
       myFuture = Provider.of<DataModel>(context, listen: false).fetchBothData();
     }
   }
@@ -49,7 +51,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Consumer<DataModel>(builder: (context, value, child) {
       return Scaffold(
         backgroundColor: Color.fromARGB(255, 0, 29, 66),
-        extendBodyBehindAppBar: kIsWeb,
+        extendBodyBehindAppBar: true,
         appBar: AppBar(
           backgroundColor: Colors.transparent,
           shadowColor: Colors.transparent,

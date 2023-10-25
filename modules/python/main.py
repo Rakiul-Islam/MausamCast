@@ -104,11 +104,6 @@ def put_up_weather_n_forecast_data():
     prepare_new_data(city_name)
     json_data1 = fpu.fetch_process_n_update_weather(city_name)
     json_data2 = fpu.fetch_process_n_update_forecast(city_name)
-    print("-"*60)
-    print(json_data1[0])
-    print("-"*60)
-    print(json_data2[0])
-    print("-"*60)
 
     json_data1_types = {
         'date_time': 'str',
@@ -248,5 +243,5 @@ def put_up_weather_n_forecast_data():
 
 if __name__ == '__main__':
 
-    app.run(debug=True)
+    app.run(debug=True, host = '0.0.0.0')
 
