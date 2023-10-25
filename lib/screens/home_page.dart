@@ -57,8 +57,7 @@ class _HomeScreenState extends State<HomeScreen> {
           shadowColor: Colors.transparent,
           leading: BackButton(
             onPressed: () {
-              Navigator.pushReplacement(context,
-                  MaterialPageRoute(builder: (context) {
+              Navigator.push(context, MaterialPageRoute(builder: (context) {
                 return SetLocationPage();
               }));
             },
@@ -487,7 +486,7 @@ class _statGraphState extends State<StatGraph> {
       List<Color> dataListColors = [];
       List<String> dateList = [];
       int maxX =
-          (value.weatherData.length > 20) ? (20) : (value.weatherData.length);
+          (value.weatherData.length > 30) ? (30) : (value.weatherData.length);
       int c = 0;
       for (int i = value.weatherData.length - maxX;
           i < value.weatherData.length;
@@ -1005,7 +1004,7 @@ class _AndroidStatGraphState extends State<AndroidStatGraph> {
       List<Color> dataListColors = [];
       List<String> dateList = [];
       int maxX =
-          (value.weatherData.length > 20) ? (20) : (value.weatherData.length);
+          (value.weatherData.length > 30) ? (30) : (value.weatherData.length);
       int c = 0;
       for (int i = value.weatherData.length - maxX;
           i < value.weatherData.length;

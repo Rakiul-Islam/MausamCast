@@ -47,8 +47,6 @@ def prepare_new_data(city_name):
 app = Flask(__name__)
 CORS(app)
 
-
-
 @app.route('/api/weather', methods=['GET'])
 def get_weather_data():
     city_name = request.args.get('city_name')
@@ -63,6 +61,7 @@ def get_weather_data():
         mimetype='text/plain'
     )
     return response
+
 @app.route('/api/forecast', methods=['GET'])
 def get_forecast_data():
     city_name = request.args.get('city_name')
@@ -100,6 +99,7 @@ def get_weather_n_forecast_data():
 
 @app.route('/remote_api/weather_n_forecast', methods=['GET'])
 def put_up_weather_n_forecast_data():
+    # to put up the data onto jsonbin.io
     city_name = request.args.get('city_name')
     prepare_new_data(city_name)
     json_data1 = fpu.fetch_process_n_update_weather(city_name)

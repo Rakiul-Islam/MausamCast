@@ -123,7 +123,7 @@ class _CustomTab1State extends State<CustomTab1> {
       _loadingState = true;
       _displayText = _textEditingController.text;
     });
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+    Navigator.push(context, MaterialPageRoute(builder: (context) {
       return HomeScreen();
     }));
     setState(() {
@@ -148,7 +148,7 @@ class _CustomTab1State extends State<CustomTab1> {
     setState(() {
       _loadingState = false;
     });
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+    Navigator.push(context, MaterialPageRoute(builder: (context) {
       return HomeScreen();
     }));
   }
@@ -395,7 +395,7 @@ class _CustomTab2State extends State<CustomTab2> {
                           ),
                         ),
                         onPressed: () {
-                          Navigator.pushReplacement(context,
+                          Navigator.push(context,
                               MaterialPageRoute(builder: (context) {
                             return HomeScreen();
                           }));

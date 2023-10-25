@@ -2,9 +2,8 @@ import subprocess, os
 
 def run_java_program(city_name):
     code = 1 # error code 0 = ok, 1 = fail
-    # cur_path = os.getcwd()
-    # cur_path = cur_path[:len(cur_path) - len(cur_path.split("\\")[-1])]
-    base_script = r"E:\Rakiul\--.Projects\.MausamCast\modules\java\scrapper>  e:; cd 'e:\Rakiul\--.Projects\.MausamCast\modules\java\scrapper'; & 'C:\Program Files\Java\jdk-20\bin\java.exe' '@C:\Users\RAKIUL\AppData\Local\Temp\cp_eqummodx7b694hrz0meq788mm.argfile' 'prj1.App'"
+    current_directory = os.getcwd()
+    base_script = f"cd '{current_directory}\\modules\\java\\scrapper'; java -cp \".;jsoup.jar;mysql-connector-j.jar\" Main"
     final_script = base_script + " \"" + city_name.lower() + "\""
     p = subprocess.run(["powershell", "-Command", final_script], capture_output=True)
     print(f"Output after Executing the java program using Shell---------------------------------------------------------")

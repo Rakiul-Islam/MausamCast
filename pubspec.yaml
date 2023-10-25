@@ -1,5 +1,5 @@
 name: my_weather_app
-description: A new Flutter project.
+description: Weather Forecasting App
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
@@ -37,6 +37,7 @@ dependencies:
   provider:
   google_fonts: ^4.0.4
   fl_chart: 
+  flutter_launcher_icons: ^0.12.0
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -53,6 +54,9 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^2.0.0
+flutter_icons:
+  android: true
+  image_path: "lib/images/icon/icon.png"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

@@ -43,5 +43,5 @@ Future<String> getCityName_() async {
     print("location service not enabled");
   }
   print("from getCityName_ cityname = $cityName");
-  return cityName;
+  return cityName.trim();
 }
