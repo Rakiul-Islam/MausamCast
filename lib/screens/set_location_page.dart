@@ -45,15 +45,24 @@ class _CustomTabsState extends State<CustomTabs>
       appBar: AppBar(
         backgroundColor: Color.fromARGB(255, 0, 29, 66),
         toolbarHeight: 100,
-        title: Text(
-          "What's Your Location ?",
-          style: GoogleFonts.notoSans(
-            textStyle: const TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: Color.fromARGB(255, 100, 160, 232),
+        title: Row(
+          children: [
+            Text(
+              "Set Location  ",
+              style: GoogleFonts.notoSans(
+                textStyle: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Color.fromARGB(255, 100, 160, 232),
+                ),
+              ),
             ),
-          ),
+            const Icon(
+              color: Color.fromARGB(255, 100, 160, 232),
+              Icons.map,
+              size: 40,
+            ),
+          ],
         ),
         bottom: TabBar(
           indicatorWeight: 4.0,
