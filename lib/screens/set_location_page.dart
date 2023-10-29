@@ -10,11 +10,13 @@ class SetLocationPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomTabs();
+    return const CustomTabs();
   }
 }
 
 class CustomTabs extends StatefulWidget {
+  const CustomTabs({super.key});
+
   @override
   _CustomTabsState createState() => _CustomTabsState();
 }
@@ -63,7 +65,7 @@ class _CustomTabsState extends State<CustomTabs>
         ),
         bottom: TabBar(
           indicatorWeight: 4.0,
-          indicatorColor: Color.fromARGB(255, 100, 160, 232),
+          indicatorColor: const Color.fromARGB(255, 100, 160, 232),
           controller: _tabController,
           tabs: [
             Tab(
@@ -93,11 +95,11 @@ class _CustomTabsState extends State<CustomTabs>
           ],
         ),
       ),
-      backgroundColor: Color.fromARGB(255, 0, 77, 172),
+      backgroundColor: const Color.fromARGB(255, 0, 77, 172),
       extendBodyBehindAppBar: (!kIsWeb) ? false : true,
       body: TabBarView(
         controller: _tabController,
-        children: [
+        children: const [
           // Content for Tab 1
           Center(
             child: CustomTab1(),
@@ -114,12 +116,14 @@ class _CustomTabsState extends State<CustomTabs>
 }
 
 class CustomTab1 extends StatefulWidget {
+  const CustomTab1({super.key});
+
   @override
   _CustomTab1State createState() => _CustomTab1State();
 }
 
 class _CustomTab1State extends State<CustomTab1> {
-  TextEditingController _textEditingController = TextEditingController();
+  final TextEditingController _textEditingController = TextEditingController();
   String _displayText = '';
   bool _loadingState = false;
   var prefixIconColor = const Color.fromARGB(192, 255, 255, 255);
@@ -155,7 +159,7 @@ class _CustomTab1State extends State<CustomTab1> {
       _loadingState = false;
     });
     Navigator.push(context, MaterialPageRoute(builder: (context) {
-      return HomeScreen();
+      return const HomeScreen();
     }));
   }
 
@@ -168,7 +172,7 @@ class _CustomTab1State extends State<CustomTab1> {
           child: Column(
             children: [
               Padding(
-                  padding: EdgeInsets.only(
+                  padding: const EdgeInsets.only(
                       top: !kIsWeb ? 0 : 140, bottom: 100, left: 40, right: 40),
                   child: Focus(
                     onFocusChange: (hasFocus) {
@@ -220,15 +224,15 @@ class _CustomTab1State extends State<CustomTab1> {
                       textInputAction: TextInputAction.done,
                     ),
                   )),
-              Container(
+              SizedBox(
                 width: 240,
                 height: 50,
                 child: ElevatedButton(
                   style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all<Color>(
-                        Color.fromARGB(0, 0, 0, 0)),
+                        const Color.fromARGB(0, 0, 0, 0)),
                     shadowColor: MaterialStateProperty.all<Color>(
-                        Color.fromARGB(0, 0, 0, 0)),
+                        const Color.fromARGB(0, 0, 0, 0)),
                     side: MaterialStateProperty.all<BorderSide>(
                       const BorderSide(
                           width: 3, color: Color.fromARGB(255, 255, 255, 255)),
@@ -269,6 +273,8 @@ class _CustomTab1State extends State<CustomTab1> {
 }
 
 class CustomTab2 extends StatefulWidget {
+  const CustomTab2({super.key});
+
   @override
   _CustomTab2State createState() => _CustomTab2State();
 }
@@ -293,17 +299,17 @@ class _CustomTab2State extends State<CustomTab2> {
           child: Column(
             children: [
               Padding(
-                padding: EdgeInsets.only(
+                padding: const EdgeInsets.only(
                     top: !kIsWeb ? 0 : 140, bottom: 100, left: 40, right: 40),
-                child: Container(
+                child: SizedBox(
                   width: 190,
                   height: 50,
                   child: ElevatedButton(
                     style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.all<Color>(
-                          Color.fromARGB(0, 0, 0, 0)),
+                          const Color.fromARGB(0, 0, 0, 0)),
                       shadowColor: MaterialStateProperty.all<Color>(
-                          Color.fromARGB(0, 0, 0, 0)),
+                          const Color.fromARGB(0, 0, 0, 0)),
                       side: MaterialStateProperty.all<BorderSide>(
                         const BorderSide(
                             width: 3,
@@ -385,15 +391,15 @@ class _CustomTab2State extends State<CustomTab2> {
                     )
                   : Container(),
               showContinueButton && !_loadingState
-                  ? Container(
+                  ? SizedBox(
                       width: 240,
                       height: 50,
                       child: ElevatedButton(
                         style: ButtonStyle(
                           backgroundColor: MaterialStateProperty.all<Color>(
-                              Color.fromARGB(0, 0, 0, 0)),
+                              const Color.fromARGB(0, 0, 0, 0)),
                           shadowColor: MaterialStateProperty.all<Color>(
-                              Color.fromARGB(0, 0, 0, 0)),
+                              const Color.fromARGB(0, 0, 0, 0)),
                           side: MaterialStateProperty.all<BorderSide>(
                             const BorderSide(
                                 width: 3,
@@ -403,7 +409,7 @@ class _CustomTab2State extends State<CustomTab2> {
                         onPressed: () {
                           Navigator.push(context,
                               MaterialPageRoute(builder: (context) {
-                            return HomeScreen();
+                            return const HomeScreen();
                           }));
                         },
                         child: Row(

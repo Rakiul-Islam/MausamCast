@@ -45,7 +45,7 @@ class _HumidityGraphPageState extends State<HumidityGraphPage> {
                         ? 0
                         : 100),
                 child: (!kIsWeb)
-                    ? Container(
+                    ? SizedBox(
                         height: 300,
                         child: Column(
                             mainAxisAlignment: MainAxisAlignment.end,
@@ -88,7 +88,7 @@ class _HumidityGraphPageState extends State<HumidityGraphPage> {
                                         height: 56,
                                         child: Center(
                                           child: Text(
-                                            "${maxHumidity} %",
+                                            "$maxHumidity %",
                                             style: GoogleFonts.notoSans(
                                               textStyle: const TextStyle(
                                                 fontSize: 28,
@@ -158,7 +158,7 @@ class _HumidityGraphPageState extends State<HumidityGraphPage> {
                                         height: 56,
                                         child: Center(
                                           child: Text(
-                                            "${minHumidity} %",
+                                            "$minHumidity %",
                                             style: GoogleFonts.notoSans(
                                               textStyle: const TextStyle(
                                                 fontSize: 28,
@@ -257,13 +257,13 @@ class _HumidityGraphPageState extends State<HumidityGraphPage> {
                       ]),
               ),
         key: _scaffoldKey,
-        backgroundColor: Color.fromARGB(255, 0, 29, 66),
+        backgroundColor: const Color.fromARGB(255, 0, 29, 66),
         extendBodyBehindAppBar: true,
         appBar: AppBar(
           backgroundColor: Colors.transparent,
           shadowColor: Colors.transparent,
           leading: Consumer<DataModel>(builder: (context, value, child) {
-            if (value.weatherData.length != 0) {
+            if (value.weatherData.isNotEmpty) {
               return IconButton(
                 icon: const Icon(
                   Icons.menu,
@@ -278,7 +278,7 @@ class _HumidityGraphPageState extends State<HumidityGraphPage> {
             }
           }),
         ),
-        drawer: SideDrawer(),
+        drawer: const SideDrawer(),
         body: SingleChildScrollView(
           child: Align(
               alignment: Alignment.bottomLeft,
@@ -349,7 +349,7 @@ class HumidityGraph extends StatelessWidget {
         print(e);
       }
     }
-    return Container(
+    return SizedBox(
       width: 20 * revweatherData.length.toDouble(),
       height: kIsWeb ? 600 : 450,
       child: LineChart(
@@ -361,7 +361,7 @@ class HumidityGraph extends StatelessWidget {
               // Define the color for the horizontal gridlines
               if (value == 0 || value >= 105) {
                 return FlLine(
-                  color: Color.fromARGB(0, 255, 255, 255),
+                  color: const Color.fromARGB(0, 255, 255, 255),
                   strokeWidth: 0.8,
                 );
               } else {
@@ -390,7 +390,7 @@ class HumidityGraph extends StatelessWidget {
               reservedSize: 20,
               showTitles: true,
               getTextStyles: (context, value) {
-                Color x = Color.fromARGB(109, 255, 255, 255);
+                Color x = const Color.fromARGB(109, 255, 255, 255);
                 return GoogleFonts.notoSans(
                   textStyle: TextStyle(
                     fontSize: 15,
@@ -453,7 +453,7 @@ class HumidityGraph extends StatelessWidget {
             ),
           ),
           minX: 0,
-          maxX: maxX.toDouble() - 1.0,
+          maxX: maxX.toDouble(),
           minY: 0,
           maxY: 105,
           lineTouchData: LineTouchData(

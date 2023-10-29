@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:my_weather_app/modules/data_model.dart';
+import 'package:my_weather_app/screens/forecast_page.dart';
 import 'package:my_weather_app/screens/humidity_page.dart';
 import 'package:my_weather_app/screens/temp_page.dart';
 import 'package:my_weather_app/screens/set_location_page.dart';
@@ -59,13 +60,13 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      backgroundColor: Color.fromARGB(255, 0, 29, 66),
+      backgroundColor: const Color.fromARGB(255, 0, 29, 66),
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         shadowColor: Colors.transparent,
         leading: Consumer<DataModel>(builder: (context, value, child) {
-          if (value.weatherData.length != 0) {
+          if (value.weatherData.isNotEmpty) {
             return IconButton(
               icon: const Icon(
                 Icons.menu,
@@ -81,7 +82,7 @@ class _HomeScreenState extends State<HomeScreen> {
         }),
         actions: [
           Consumer<DataModel>(builder: (context, value, child) {
-            if (value.weatherData.length != 0) {
+            if (value.weatherData.isNotEmpty) {
               return IconButton(
                 icon: const Icon(
                   Icons.refresh,
@@ -92,7 +93,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       .dataFetchedOnce = false;
                   Navigator.pushReplacement(
                     context,
-                    MaterialPageRoute(builder: (context) => HomeScreen()),
+                    MaterialPageRoute(builder: (context) => const HomeScreen()),
                   );
                 },
               );
@@ -105,7 +106,7 @@ class _HomeScreenState extends State<HomeScreen> {
           )
         ],
       ),
-      drawer: SideDrawer(),
+      drawer: const SideDrawer(),
       body: Consumer<DataModel>(
         builder: (context, value, child) {
           return FutureBuilder<int>(
@@ -123,7 +124,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       alignment: Alignment.center,
                       child: SingleChildScrollView(
                         scrollDirection: Axis.horizontal,
-                        child: Container(
+                        child: SizedBox(
                           width: 980,
                           height: 60,
                           child: Row(
@@ -274,7 +275,7 @@ class HomePageLayout extends StatelessWidget {
                           child: StatGraph()),
                       Padding(
                         padding: const EdgeInsets.only(left: 20, bottom: 10),
-                        child: Container(
+                        child: SizedBox(
                           width: 510,
                           child: Row(
                             children: [
@@ -304,7 +305,7 @@ class HomePageLayout extends StatelessWidget {
                       Padding(
                         padding:
                             const EdgeInsets.only(top: 5, left: 20, bottom: 10),
-                        child: Container(
+                        child: SizedBox(
                           width: 670,
                           child: Row(
                             children: [
@@ -327,7 +328,7 @@ class HomePageLayout extends StatelessWidget {
                           ),
                         ),
                       ),
-                      Padding(
+                      const Padding(
                           padding: EdgeInsets.only(
                               top: 0, bottom: 0, right: 40, left: 30),
                           child: ForecastTilesView()),
@@ -364,7 +365,7 @@ class SideDrawer extends StatelessWidget {
         child: ListView(
           padding: EdgeInsets.zero,
           children: <Widget>[
-            Container(
+            SizedBox(
               height: kIsWeb ? 140 : 180,
               child: DrawerHeader(
                 decoration: BoxDecoration(
@@ -403,9 +404,9 @@ class SideDrawer extends StatelessWidget {
                         ElevatedButton(
                           style: ButtonStyle(
                             backgroundColor: MaterialStateProperty.all<Color>(
-                                Color.fromARGB(0, 0, 0, 0)),
+                                const Color.fromARGB(0, 0, 0, 0)),
                             shadowColor: MaterialStateProperty.all<Color>(
-                                Color.fromARGB(0, 0, 0, 0)),
+                                const Color.fromARGB(0, 0, 0, 0)),
                             side: MaterialStateProperty.all<BorderSide>(
                               const BorderSide(
                                   color: Color.fromARGB(0, 255, 255, 255)),
@@ -505,7 +506,7 @@ class SideDrawer extends StatelessWidget {
               padding: const EdgeInsets.only(top: 30, left: 20, bottom: 10),
               child: InkWell(
                 onTap: () {
-                  Navigator.pushReplacement(
+                  Navigator.push(
                     context,
                     MaterialPageRoute(
                         builder: (context) => const HumidityGraphPage()),
@@ -535,7 +536,7 @@ class SideDrawer extends StatelessWidget {
               padding: const EdgeInsets.only(top: 30, left: 20, bottom: 10),
               child: InkWell(
                 onTap: () {
-                  Navigator.pushReplacement(
+                  Navigator.push(
                     context,
                     MaterialPageRoute(
                         builder: (context) => const WindSpeedGraphPage()),
@@ -565,9 +566,9 @@ class SideDrawer extends StatelessWidget {
               padding: const EdgeInsets.only(top: 30, left: 20, bottom: 10),
               child: InkWell(
                 onTap: () {
-                  Navigator.pushReplacement(
+                  Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const HomeScreen()),
+                    MaterialPageRoute(builder: (context) => const ForecastPage()),
                   );
                 },
                 child: Row(
@@ -633,7 +634,7 @@ class _WeatherDataTileState extends State<WeatherDataTile> {
       } else if (imageName >= 13 && imageName < 50) {
         imageName = 13;
       }
-      return Container(
+      return SizedBox(
         width: 580,
         height: 240,
         child: Align(
@@ -829,7 +830,7 @@ class _statGraphState extends State<StatGraph> {
         //   }
         // }
       */
-      return Container(
+      return SizedBox(
         width: 500,
         height: 320,
         child: LineChart(
@@ -932,7 +933,7 @@ class _ForecastTilesViewState extends State<ForecastTilesView> {
   @override
   Widget build(BuildContext context) {
     return Consumer<DataModel>(builder: (context, value, child) {
-      return Container(
+      return SizedBox(
           width: 760,
           height: 650,
           child: ListView.builder(
@@ -1325,7 +1326,7 @@ class _AndroidStatGraphState extends State<AndroidStatGraph> {
         }
       }
 
-      return Container(
+      return SizedBox(
         width: 325, // Adjusted pixel width
         height: 208, // Adjusted pixel height
         child: LineChart(
@@ -1419,7 +1420,7 @@ class _AndroidStatGraphState extends State<AndroidStatGraph> {
 }
 
 class AndroidForecastTilesView extends StatefulWidget {
-  const AndroidForecastTilesView({Key? key});
+  const AndroidForecastTilesView({super.key});
 
   @override
   State<AndroidForecastTilesView> createState() =>

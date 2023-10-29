@@ -45,7 +45,7 @@ class _WindSpeedGraphPageState extends State<WindSpeedGraphPage> {
                         ? 0
                         : 100),
                 child: (!kIsWeb)
-                    ? Container(
+                    ? SizedBox(
                         height: 300,
                         child: Column(
                             mainAxisAlignment: MainAxisAlignment.end,
@@ -88,7 +88,7 @@ class _WindSpeedGraphPageState extends State<WindSpeedGraphPage> {
                                         height: 56,
                                         child: Center(
                                           child: Text(
-                                            "${maxWindSpeed} m/s",
+                                            "$maxWindSpeed m/s",
                                             style: GoogleFonts.notoSans(
                                               textStyle: const TextStyle(
                                                 fontSize: 28,
@@ -158,7 +158,7 @@ class _WindSpeedGraphPageState extends State<WindSpeedGraphPage> {
                                         height: 56,
                                         child: Center(
                                           child: Text(
-                                            "${minWindSpeed} m/s",
+                                            "$minWindSpeed m/s",
                                             style: GoogleFonts.notoSans(
                                               textStyle: const TextStyle(
                                                 fontSize: 28,
@@ -201,7 +201,7 @@ class _WindSpeedGraphPageState extends State<WindSpeedGraphPage> {
                             height: 40,
                             child: Center(
                               child: Text(
-                                "${minWindSpeed} m/s",
+                                "$minWindSpeed m/s",
                                 style: GoogleFonts.notoSans(
                                   textStyle: const TextStyle(
                                     fontSize: 25,
@@ -242,7 +242,7 @@ class _WindSpeedGraphPageState extends State<WindSpeedGraphPage> {
                             height: 40,
                             child: Center(
                               child: Text(
-                                "${maxWindSpeed} m/s",
+                                "$maxWindSpeed m/s",
                                 style: GoogleFonts.notoSans(
                                   textStyle: const TextStyle(
                                     fontSize: 25,
@@ -257,13 +257,13 @@ class _WindSpeedGraphPageState extends State<WindSpeedGraphPage> {
                       ]),
               ),
         key: _scaffoldKey,
-        backgroundColor: Color.fromARGB(255, 0, 29, 66),
+        backgroundColor: const Color.fromARGB(255, 0, 29, 66),
         extendBodyBehindAppBar: true,
         appBar: AppBar(
           backgroundColor: Colors.transparent,
           shadowColor: Colors.transparent,
           leading: Consumer<DataModel>(builder: (context, value, child) {
-            if (value.weatherData.length != 0) {
+            if (value.weatherData.isNotEmpty) {
               return IconButton(
                 icon: const Icon(
                   Icons.menu,
@@ -278,7 +278,7 @@ class _WindSpeedGraphPageState extends State<WindSpeedGraphPage> {
             }
           }),
         ),
-        drawer: SideDrawer(),
+        drawer: const SideDrawer(),
         body: SingleChildScrollView(
           child: Align(
               alignment: Alignment.bottomLeft,
@@ -349,7 +349,7 @@ class WindSpeedGraph extends StatelessWidget {
         print(e);
       }
     }
-    return Container(
+    return SizedBox(
       width: 20 * revweatherData.length.toDouble(),
       height: kIsWeb ? 600 : 450,
       child: LineChart(
@@ -361,7 +361,7 @@ class WindSpeedGraph extends StatelessWidget {
               // Define the color for the horizontal gridlines
               if (value == 0 || value >= 105) {
                 return FlLine(
-                  color: Color.fromARGB(0, 255, 255, 255),
+                  color: const Color.fromARGB(0, 255, 255, 255),
                   strokeWidth: 0.8,
                 );
               } else {
@@ -390,7 +390,7 @@ class WindSpeedGraph extends StatelessWidget {
               reservedSize: 20,
               showTitles: true,
               getTextStyles: (context, value) {
-                Color x = Color.fromARGB(109, 255, 255, 255);
+                Color x = const Color.fromARGB(109, 255, 255, 255);
                 return GoogleFonts.notoSans(
                   textStyle: TextStyle(
                     fontSize: 15,
@@ -450,7 +450,7 @@ class WindSpeedGraph extends StatelessWidget {
             ),
           ),
           minX: 0,
-          maxX: maxX.toDouble() - 1.0,
+          maxX: maxX.toDouble() ,
           minY: 0,
           maxY: 6,
           lineTouchData: LineTouchData(

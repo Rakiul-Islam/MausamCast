@@ -53,7 +53,7 @@ class DeciderScreen extends StatelessWidget {
           return Text('Error: ${snapshot.error}');
         } else {
           final cityName = snapshot.data;
-          print("got cityname ${cityName}");
+          print("got cityname $cityName");
           return MaterialApp(
             debugShowCheckedModeBanner: false,
             title: 'MausamCast',

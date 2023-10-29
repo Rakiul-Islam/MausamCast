@@ -45,7 +45,7 @@ class _TempGraphPageState extends State<TempGraphPage> {
                         ? 0
                         : 100),
                 child: (!kIsWeb)
-                    ? Container(
+                    ? SizedBox(
                         height: 300,
                         child: Column(
                             mainAxisAlignment: MainAxisAlignment.end,
@@ -223,13 +223,13 @@ class _TempGraphPageState extends State<TempGraphPage> {
                       ]),
               ),
         key: _scaffoldKey,
-        backgroundColor: Color.fromARGB(255, 0, 29, 66),
+        backgroundColor: const Color.fromARGB(255, 0, 29, 66),
         extendBodyBehindAppBar: true,
         appBar: AppBar(
           backgroundColor: Colors.transparent,
           shadowColor: Colors.transparent,
           leading: Consumer<DataModel>(builder: (context, value, child) {
-            if (value.weatherData.length != 0) {
+            if (value.weatherData.isNotEmpty) {
               return IconButton(
                 icon: const Icon(
                   Icons.menu,
@@ -244,16 +244,17 @@ class _TempGraphPageState extends State<TempGraphPage> {
             }
           }),
         ),
-        drawer: SideDrawer(),
+        drawer: const SideDrawer(),
         body: Align(
             alignment: Alignment.bottomLeft,
             child: Padding(
                 padding: EdgeInsets.only(
-                    bottom: (kIsWeb ||
-                            MediaQuery.of(context).orientation ==
-                                Orientation.landscape)
-                        ? 10
-                        : 20,
+                    bottom: kIsWeb
+                        ? 30
+                        : (MediaQuery.of(context).orientation ==
+                                Orientation.portrait)
+                            ? 50
+                            : 10,
                     left: kIsWeb
                         ? 20
                         : (MediaQuery.of(context).orientation ==
@@ -261,7 +262,12 @@ class _TempGraphPageState extends State<TempGraphPage> {
                             ? 10
                             : 50,
                     right: 20,
-                    top: 10),
+                    top: kIsWeb
+                        ? 10
+                        : (MediaQuery.of(context).orientation ==
+                                Orientation.portrait)
+                            ? 10
+                            : 30,),
                 child: const SingleChildScrollView(
                     scrollDirection: Axis.horizontal, child: TempGraph()))));
   }
@@ -302,7 +308,7 @@ class TempGraph extends StatelessWidget {
         print(e);
       }
     }
-    return Container(
+    return SizedBox(
       width: 20 * revweatherData.length.toDouble(),
       height: kIsWeb ? 600 : 450,
       child: LineChart(
@@ -314,7 +320,7 @@ class TempGraph extends StatelessWidget {
               // Define the color for the horizontal gridlines
               if (value == 0 || value >= 47) {
                 return FlLine(
-                  color: Color.fromARGB(0, 255, 255, 255),
+                  color: const Color.fromARGB(0, 255, 255, 255),
                   strokeWidth: 0.8,
                 );
               } else {
@@ -337,7 +343,7 @@ class TempGraph extends StatelessWidget {
               reservedSize: 20,
               showTitles: true,
               getTextStyles: (context, value) {
-                Color x = Color.fromARGB(109, 255, 255, 255);
+                Color x = const Color.fromARGB(109, 255, 255, 255);
                 return GoogleFonts.notoSans(
                   textStyle: TextStyle(
                     fontSize: 15,
@@ -395,7 +401,7 @@ class TempGraph extends StatelessWidget {
             ),
           ),
           minX: 0,
-          maxX: maxX.toDouble() - 1.0,
+          maxX: maxX.toDouble(),
           minY: 0,
           maxY: 47,
           lineTouchData: LineTouchData(

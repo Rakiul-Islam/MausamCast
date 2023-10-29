@@ -248,11 +248,11 @@ class DataModel extends ChangeNotifier {
     }
   }
 
-  Future<int> setCityName(String _cityname) async {
-    if (_cityname.toLowerCase() != cityName) {
+  Future<int> setCityName(String cityname) async {
+    if (cityname.toLowerCase() != cityName) {
       dataFetchedOnce = false;
     }
-    cityName = _cityname;
+    cityName = cityname;
     notifyListeners();
     print("Notified");
     print("cityName changed to : $cityName");
@@ -392,9 +392,9 @@ class DataModel extends ChangeNotifier {
 
   Future<int> fetchBothDataJsonBin() async {
     // get forecastData from jsonbin.io and set it onto the getter variable
-    final binId = '6537c76012a5d376598fe229'; // Replace with the actual bin ID
-    final apiUrl = 'https://api.jsonbin.io/v3/b/$binId';
-    final masterKey =
+    const binId = '6537c76012a5d376598fe229'; // Replace with the actual bin ID
+    const apiUrl = 'https://api.jsonbin.io/v3/b/$binId';
+    const masterKey =
         "\$2a\$10\$7DtsQl0ZlTmcxAKKDWqrqeuPYpSvtjNRgKRU4z9H7dOCCshhd/kI6";
 
     try {
