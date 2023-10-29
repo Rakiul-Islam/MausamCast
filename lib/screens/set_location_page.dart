@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -12,9 +10,7 @@ class SetLocationPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: CustomTabs(),
-    );
+    return CustomTabs();
   }
 }
 
@@ -43,12 +39,13 @@ class _CustomTabsState extends State<CustomTabs>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color.fromARGB(255, 0, 29, 66),
+        automaticallyImplyLeading: false,
+        backgroundColor: const Color.fromARGB(255, 0, 29, 66),
         toolbarHeight: 100,
         title: Row(
           children: [
             Text(
-              "Set Location  ",
+              "  Set Location  ",
               style: GoogleFonts.notoSans(
                 textStyle: const TextStyle(
                   fontSize: 20,
@@ -127,19 +124,19 @@ class _CustomTab1State extends State<CustomTab1> {
   bool _loadingState = false;
   var prefixIconColor = const Color.fromARGB(192, 255, 255, 255);
 
-  void _setCity() async {
-    setState(() {
-      _loadingState = true;
-      _displayText = _textEditingController.text;
-    });
-    Navigator.push(context, MaterialPageRoute(builder: (context) {
-      return HomeScreen();
-    }));
-    setState(() {
-      _loadingState = false;
-    });
-    print('Text from TextField: $_displayText');
-  }
+  // void _setCity() async {
+  //   setState(() {
+  //     _loadingState = true;
+  //     _displayText = _textEditingController.text;
+  //   });
+  //   Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+  //     return HomeScreen();
+  //   }));
+  //   setState(() {
+  //     _loadingState = false;
+  //   });
+  //   print('Text from TextField: $_displayText');
+  // }
 
   @override
   void dispose() {
@@ -150,7 +147,7 @@ class _CustomTab1State extends State<CustomTab1> {
   void set_n_continue() {
     setState(() {
       _loadingState = true;
-      _displayText = _textEditingController.text;
+      _displayText = _textEditingController.text.trim();
     });
     print('Text from TextField: $_displayText');
     Provider.of<DataModel>(context, listen: false).setCityName(_displayText);

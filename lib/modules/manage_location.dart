@@ -9,7 +9,7 @@ Future<String> getCityName_() async {
 
   if (isLocationServiceEnabled) {
     // Request permission to access the location
-    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    // bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
     LocationPermission permission = await Geolocator.requestPermission();
 
     if (permission == LocationPermission.denied) {

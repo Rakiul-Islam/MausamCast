@@ -1,11 +1,12 @@
-import 'dart:io';
-
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:my_weather_app/modules/data_model.dart';
+import 'package:my_weather_app/screens/humidity_page.dart';
+import 'package:my_weather_app/screens/temp_page.dart';
 import 'package:my_weather_app/screens/set_location_page.dart';
+import 'package:my_weather_app/screens/windSpeed_page.dart';
 import 'package:provider/provider.dart';
 
 String capitalizeWords(String input) {
@@ -28,16 +29,24 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   late final Future<int> myFuture;
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
-    if (!kIsWeb) {
-      // for Phone
-      myFuture =
-          Provider.of<DataModel>(context, listen: false).fetchBothDataRemote();
+    super.initState();
+    if (Provider.of<DataModel>(context, listen: false).dataFetchedOnce ==
+        false) {
+      if (!kIsWeb) {
+        // for Phone
+        myFuture = Provider.of<DataModel>(context, listen: false)
+            .fetchNewData("Remote");
+      } else {
+        // for Web
+        myFuture = Provider.of<DataModel>(context, listen: false)
+            .fetchNewData("LocalHost");
+      }
     } else {
-      // for Web
-      myFuture = Provider.of<DataModel>(context, listen: false).fetchBothData();
+      myFuture = Future<int>.value(0);
     }
   }
 
@@ -48,98 +57,130 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<DataModel>(builder: (context, value, child) {
-      return Scaffold(
-        backgroundColor: Color.fromARGB(255, 0, 29, 66),
-        extendBodyBehindAppBar: true,
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          shadowColor: Colors.transparent,
-          leading: BackButton(
-            onPressed: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return SetLocationPage();
-              }));
-            },
-          ),
-        ),
-        body: value.dataFetchedOnce
-            ? const Padding(
-                padding: EdgeInsets.only(top: 20), child: HomePageLayout())
-            : FutureBuilder<int>(
-                future: myFuture,
-                builder: (context, snapshot) {
-                  switch (snapshot.connectionState) {
-                    case ConnectionState.done:
-                      print("from fetchData : ${snapshot.data}");
-                      if (snapshot.data == 0) {
-                        return const Padding(
-                            padding: EdgeInsets.only(top: 20),
-                            child: HomePageLayout());
-                      } else {
-                        return Align(
-                          alignment: Alignment.center,
-                          child: SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Container(
-                              width: 980,
-                              height: 60,
-                              child: Row(
-                                children: [
-                                  const Icon(
-                                    color: Color.fromARGB(255, 250, 137, 129),
-                                    Icons.error,
-                                    size: 50,
-                                  ),
-                                  Text(
-                                    "  Problem in fetching data from server...Did you set the location correctly?",
-                                    style: GoogleFonts.notoSans(
-                                      textStyle: const TextStyle(
-                                        fontSize: 25,
-                                        fontWeight: FontWeight.bold,
-                                        color:
-                                            Color.fromARGB(255, 196, 192, 192),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        );
-                      }
-
-                    default:
-                      return Align(
-                        alignment: Alignment.center,
+    return Scaffold(
+      key: _scaffoldKey,
+      backgroundColor: Color.fromARGB(255, 0, 29, 66),
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        shadowColor: Colors.transparent,
+        leading: Consumer<DataModel>(builder: (context, value, child) {
+          if (value.weatherData.length != 0) {
+            return IconButton(
+              icon: const Icon(
+                Icons.menu,
+                size: 35,
+              ),
+              onPressed: () {
+                _scaffoldKey.currentState?.openDrawer();
+              },
+            );
+          } else {
+            return Container();
+          }
+        }),
+        actions: [
+          Consumer<DataModel>(builder: (context, value, child) {
+            if (value.weatherData.length != 0) {
+              return IconButton(
+                icon: const Icon(
+                  Icons.refresh,
+                  size: 35,
+                ),
+                onPressed: () {
+                  Provider.of<DataModel>(context, listen: false)
+                      .dataFetchedOnce = false;
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => HomeScreen()),
+                  );
+                },
+              );
+            } else {
+              return Container();
+            }
+          }),
+          Container(
+            width: 20,
+          )
+        ],
+      ),
+      drawer: SideDrawer(),
+      body: Consumer<DataModel>(
+        builder: (context, value, child) {
+          return FutureBuilder<int>(
+            future: myFuture,
+            builder: (context, snapshot) {
+              switch (snapshot.connectionState) {
+                case ConnectionState.done:
+                  print("from fetchData : ${snapshot.data}");
+                  if (snapshot.data == 0) {
+                    return const Padding(
+                        padding: EdgeInsets.only(top: 20),
+                        child: HomePageLayout());
+                  } else {
+                    return Align(
+                      alignment: Alignment.center,
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
                         child: Container(
-                          width: 250,
+                          width: 980,
                           height: 60,
                           child: Row(
                             children: [
-                              const CircularProgressIndicator(
-                                strokeWidth: 5,
-                                color: Colors.white,
+                              const Icon(
+                                color: Color.fromARGB(255, 250, 137, 129),
+                                Icons.error,
+                                size: 50,
                               ),
                               Text(
-                                "  Loading...",
+                                "  Problem in fetching data from server...Did you set the location correctly?",
                                 style: GoogleFonts.notoSans(
                                   textStyle: const TextStyle(
-                                    fontSize: 30,
+                                    fontSize: 25,
                                     fontWeight: FontWeight.bold,
-                                    color: Color.fromARGB(255, 255, 255, 255),
+                                    color: Color.fromARGB(255, 196, 192, 192),
                                   ),
                                 ),
                               ),
                             ],
                           ),
                         ),
-                      );
+                      ),
+                    );
                   }
-                },
-              ),
-      );
-    });
+
+                default:
+                  return Align(
+                    alignment: Alignment.center,
+                    child: SizedBox(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const CircularProgressIndicator(
+                            strokeWidth: 5,
+                            color: Colors.white,
+                          ),
+                          Text(
+                            "  Loading...",
+                            style: GoogleFonts.notoSans(
+                              textStyle: const TextStyle(
+                                fontSize: 30,
+                                fontWeight: FontWeight.bold,
+                                color: Color.fromARGB(255, 255, 255, 255),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+              }
+            },
+          );
+        },
+      ),
+    );
   }
 }
 
@@ -296,6 +337,263 @@ class HomePageLayout extends StatelessWidget {
               ),
             ),
           );
+  }
+}
+
+class SideDrawer extends StatelessWidget {
+  const SideDrawer({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<DataModel>(builder: (context, value, child) {
+      WeatherData currWeatherData =
+          value.weatherData[value.weatherData.length - 1];
+      var avgTemp = (currWeatherData.temperatureValue - 273.00).round();
+      var temp = (avgTemp > 45) ? (45) : ((avgTemp < 10) ? (10) : (avgTemp));
+      var headerColor = Color.fromARGB(
+          255,
+          ((temp - 10) * (255 / 35)).round(),
+          ((45 - temp) * (255 / 35) * (0.5)).round(),
+          ((45 - temp) * (255 / 35)).round());
+      return Drawer(
+        backgroundColor: Color.fromARGB(
+            200,
+            (headerColor.red * 0.5).round(),
+            (headerColor.green * 0.5).round(),
+            (headerColor.blue * 0.5).round()),
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            Container(
+              height: kIsWeb ? 140 : 180,
+              child: DrawerHeader(
+                decoration: BoxDecoration(
+                  color: headerColor,
+                ),
+                child: Align(
+                  alignment: Alignment.topLeft,
+                  child: Padding(
+                    padding:
+                        const EdgeInsets.only(top: 25, left: 10, right: 10),
+                    child: Column(
+                      children: [
+                        Row(
+                          children: [
+                            const Icon(
+                              color: Color.fromARGB(255, 251, 253, 255),
+                              Icons.location_on,
+                              size: 40,
+                            ),
+                            Container(
+                              child: Text(
+                                (currWeatherData.cityName.length >= 15)
+                                    ? " ${capitalizeWords(currWeatherData.cityName).substring(0, 12)}..."
+                                    : " ${capitalizeWords(currWeatherData.cityName)}",
+                                style: GoogleFonts.notoSans(
+                                  textStyle: const TextStyle(
+                                      fontSize: 25,
+                                      fontWeight: FontWeight.bold,
+                                      color:
+                                          Color.fromARGB(255, 255, 255, 255)),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        ElevatedButton(
+                          style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all<Color>(
+                                Color.fromARGB(0, 0, 0, 0)),
+                            shadowColor: MaterialStateProperty.all<Color>(
+                                Color.fromARGB(0, 0, 0, 0)),
+                            side: MaterialStateProperty.all<BorderSide>(
+                              const BorderSide(
+                                  color: Color.fromARGB(0, 255, 255, 255)),
+                            ),
+                          ),
+                          onPressed: () {
+                            Navigator.push(context,
+                                MaterialPageRoute(builder: (context) {
+                              return const SetLocationPage();
+                            }));
+                          },
+                          child: Row(
+                            children: [
+                              const Icon(
+                                Icons.refresh,
+                                size: 20,
+                              ),
+                              Text(
+                                ' Change',
+                                style: GoogleFonts.notoSans(
+                                  textStyle: const TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 30, left: 20, bottom: 10),
+              child: InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const HomeScreen()),
+                  );
+                },
+                child: Row(
+                  children: [
+                    const Icon(
+                      color: Color.fromARGB(160, 255, 255, 255),
+                      Icons.home_outlined,
+                      size: 30,
+                    ),
+                    Text(
+                      " Home",
+                      style: GoogleFonts.notoSans(
+                        textStyle: const TextStyle(
+                            fontSize: 25,
+                            fontWeight: FontWeight.bold,
+                            color: Color.fromARGB(160, 255, 255, 255)),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 30, left: 20, bottom: 10),
+              child: InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const TempGraphPage()),
+                  );
+                },
+                child: Row(
+                  children: [
+                    const Icon(
+                      color: Color.fromARGB(160, 255, 255, 255),
+                      Icons.thermostat_outlined,
+                      size: 30,
+                    ),
+                    Text(
+                      " Temperature",
+                      style: GoogleFonts.notoSans(
+                        textStyle: const TextStyle(
+                            fontSize: 25,
+                            fontWeight: FontWeight.bold,
+                            color: Color.fromARGB(160, 255, 255, 255)),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 30, left: 20, bottom: 10),
+              child: InkWell(
+                onTap: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const HumidityGraphPage()),
+                  );
+                },
+                child: Row(
+                  children: [
+                    const Icon(
+                      color: Color.fromARGB(160, 255, 255, 255),
+                      Icons.water_drop_outlined,
+                      size: 30,
+                    ),
+                    Text(
+                      " Humidity",
+                      style: GoogleFonts.notoSans(
+                        textStyle: const TextStyle(
+                            fontSize: 25,
+                            fontWeight: FontWeight.bold,
+                            color: Color.fromARGB(160, 255, 255, 255)),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 30, left: 20, bottom: 10),
+              child: InkWell(
+                onTap: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const WindSpeedGraphPage()),
+                  );
+                },
+                child: Row(
+                  children: [
+                    const Icon(
+                      color: Color.fromARGB(160, 255, 255, 255),
+                      Icons.water,
+                      size: 30,
+                    ),
+                    Text(
+                      " Wind Speed",
+                      style: GoogleFonts.notoSans(
+                        textStyle: const TextStyle(
+                            fontSize: 25,
+                            fontWeight: FontWeight.bold,
+                            color: Color.fromARGB(160, 255, 255, 255)),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 30, left: 20, bottom: 10),
+              child: InkWell(
+                onTap: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => const HomeScreen()),
+                  );
+                },
+                child: Row(
+                  children: [
+                    const Icon(
+                      color: Color.fromARGB(160, 255, 255, 255),
+                      Icons.wb_sunny_outlined,
+                      size: 30,
+                    ),
+                    Text(
+                      " 5-Day Forecast",
+                      style: GoogleFonts.notoSans(
+                        textStyle: const TextStyle(
+                            fontSize: 25,
+                            fontWeight: FontWeight.bold,
+                            color: Color.fromARGB(160, 255, 255, 255)),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    });
   }
 }
 
@@ -1049,6 +1347,7 @@ class _AndroidStatGraphState extends State<AndroidStatGraph> {
             maxY: 40,
             lineTouchData: LineTouchData(
               touchTooltipData: LineTouchTooltipData(
+                fitInsideHorizontally: true,
                 tooltipBgColor: const Color.fromARGB(188, 255, 255, 255),
                 tooltipRoundedRadius: 8,
                 getTooltipItems: (List<LineBarSpot> touchedSpots) {

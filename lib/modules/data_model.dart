@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:my_weather_app/modules/manage_location.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
 class WeatherData {
@@ -240,6 +241,7 @@ class DataModel extends ChangeNotifier {
       notifyListeners();
       print("Notified");
       print("cityName changed to : $cityName");
+      await saveCitynameLocally(cityName);
       return 0;
     } else {
       return 1;
@@ -254,6 +256,7 @@ class DataModel extends ChangeNotifier {
     notifyListeners();
     print("Notified");
     print("cityName changed to : $cityName");
+    await saveCitynameLocally(cityName);
     return 0;
   }
 
@@ -312,17 +315,25 @@ class DataModel extends ChangeNotifier {
     }
   }
 
-  Future<int> fetchBothData() async {
+  Future<int> fetchNewData(String mode) async {
     // get forecastData from the flask server and set it onto the getter variable
-    final response = await http.get(Uri.parse(
-        'http://localhost:5000/api/weather_n_forecast?city_name=${cityName.toLowerCase()}'));
+    late final http.Response response;
+    if (mode == "LocalHost") {
+      response = await http.get(Uri.parse(
+          'http://localhost:5000/api/weather_n_forecast?city_name=${cityName.toLowerCase()}'));
+    } else if (mode == "Remote") {
+      response = await http.get(Uri.parse(
+          'http://10.3.15.93:5000/api/weather_n_forecast?city_name=${cityName.toLowerCase()}'));
+    } else {
+      return 1;
+    }
+
     if (response.statusCode == 200) {
       if (response.body.toString() == "\"error\"") {
         print("Error in fetching data from python server.");
         return 1;
       }
       String jsonString = response.body.toString().replaceAll("NaN", "null");
-
       try {
         final Map<String, dynamic> jsonData = json.decode(jsonString);
         final List<dynamic> weatherList = jsonData['weather_data'];
@@ -337,6 +348,7 @@ class DataModel extends ChangeNotifier {
         return 1;
       }
       print("forcast data has ${forecastData.length} items ");
+      dataFetchedOnce = true;
       notifyListeners();
       return 0;
     } else {
@@ -345,38 +357,38 @@ class DataModel extends ChangeNotifier {
     }
   }
 
-  Future<int> fetchBothDataRemote() async {
-    // get forecastData from the flask server and set it onto the getter variable
-    final response = await http.get(Uri.parse(
-        'http://10.3.15.93:5000/api/weather_n_forecast?city_name=${cityName.toLowerCase()}'));
-    if (response.statusCode == 200) {
-      if (response.body.toString() == "\"error\"") {
-        print("Error in fetching data from python server.");
-        return 1;
-      }
-      String jsonString = response.body.toString().replaceAll("NaN", "null");
+  // Future<int> fetchNewDataRemote() async {
+  //   // get forecastData from the flask server and set it onto the getter variable
+  //   final response = await http.get(Uri.parse(
+  //       'http://10.3.15.93:5000/api/weather_n_forecast?city_name=${cityName.toLowerCase()}'));
+  //   if (response.statusCode == 200) {
+  //     if (response.body.toString() == "\"error\"") {
+  //       print("Error in fetching data from python server.");
+  //       return 1;
+  //     }
+  //     String jsonString = response.body.toString().replaceAll("NaN", "null");
 
-      try {
-        final Map<String, dynamic> jsonData = json.decode(jsonString);
-        final List<dynamic> weatherList = jsonData['weather_data'];
-        final List<dynamic> forecastList = jsonData['forecast_data'];
-        weatherData =
-            weatherList.map((json) => WeatherData.fromJson(json)).toList();
-        forecastData =
-            forecastList.map((json) => ForecastData.fromJson(json)).toList();
-      } catch (e) {
-        print('Error decoding JSON: $e');
-        weatherData = [];
-        return 1;
-      }
-      print("forcast data has ${forecastData.length} items ");
-      notifyListeners();
-      return 0;
-    } else {
-      forecastData = [];
-      return 1;
-    }
-  }
+  //     try {
+  //       final Map<String, dynamic> jsonData = json.decode(jsonString);
+  //       final List<dynamic> weatherList = jsonData['weather_data'];
+  //       final List<dynamic> forecastList = jsonData['forecast_data'];
+  //       weatherData =
+  //           weatherList.map((json) => WeatherData.fromJson(json)).toList();
+  //       forecastData =
+  //           forecastList.map((json) => ForecastData.fromJson(json)).toList();
+  //     } catch (e) {
+  //       print('Error decoding JSON: $e');
+  //       weatherData = [];
+  //       return 1;
+  //     }
+  //     print("forcast data has ${forecastData.length} items ");
+  //     notifyListeners();
+  //     return 0;
+  //   } else {
+  //     forecastData = [];
+  //     return 1;
+  //   }
+  // }
 
   Future<int> fetchBothDataJsonBin() async {
     // get forecastData from jsonbin.io and set it onto the getter variable
@@ -426,15 +438,49 @@ class DataModel extends ChangeNotifier {
     }
   }
 
-  // Future<int> fetchBothData() async {
-  //   try {
-  //     await fetchWeatherData();
-  //     await fetchForecastData();
-  //     dataFetchedOnce = true;
-  //     return 0;
-  //   } catch (e) {
-  //     print('Error : ${e}');
+  Future<void> saveCitynameLocally(String cityName) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString('LocalCityName', cityName);
+  }
+
+  Future<int> getnsetLocalCityname() async {
+    final prefs = await SharedPreferences.getInstance();
+    final String cityname = prefs.getString('LocalCityName') ?? "";
+    if (cityname != "") {
+      setCityName(cityname);
+      return 0;
+    } else {
+      return 1;
+    }
+  }
+
+  // Future<void> saveJsonLocally(String jsonString) async {
+  //   final prefs = await SharedPreferences.getInstance();
+  //   prefs.setString('LocalJsonData', jsonString);
+  // }
+
+  // Future<int> fetchDataLocally() async {
+  //   final prefs = await SharedPreferences.getInstance();
+  //   final String jsonString = prefs.getString('LocalJsonData') ?? "";
+  //   if (jsonString == "") {
+  //     print("No Local Data found");
   //     return 1;
   //   }
+  //   try {
+  //     final Map<String, dynamic> jsonData = json.decode(jsonString);
+  //     final List<dynamic> weatherList = jsonData['weather_data'];
+  //     final List<dynamic> forecastList = jsonData['forecast_data'];
+  //     weatherData =
+  //         weatherList.map((json) => WeatherData.fromJson(json)).toList();
+  //     forecastData =
+  //         forecastList.map((json) => ForecastData.fromJson(json)).toList();
+  //   } catch (e) {
+  //     print('Error decoding JSON: $e');
+  //     weatherData = [];
+  //     return 1;
+  //   }
+  //   print("forcast data has ${forecastData.length} items ");
+  //   notifyListeners();
+  //   return 0;
   // }
 }

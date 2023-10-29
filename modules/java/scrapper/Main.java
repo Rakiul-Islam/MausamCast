@@ -34,6 +34,7 @@ public class Main{
         }
         catch(Exception e){
             System.out.println("Error in getting 'data1'!!!");
+            System.out.println(e);
             run_db_update = false;
         }
 
@@ -43,6 +44,7 @@ public class Main{
         }
         catch(Exception e){
             System.out.println("Error in getting 'data2'!!!");
+            System.out.println(e);
             run_db_update = false;
         }
         int code = 1;
