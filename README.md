@@ -11,7 +11,7 @@ A Weather App using flutter.
 
 ## Screenshots
 
-<img src="https://github.com/Rak002/MausamCast/assets/102357129/4e885f78-3d90-4118-8adc-5f0303fef8a1" style="transform: scale(0.1);">
+<img src="https://github.com/Rak002/MausamCast/assets/102357129/4e885f78-3d90-4118-8adc-5f0303fef8a1" style="transform: scale(10);">
 <img src="https://github.com/Rak002/MausamCast/assets/102357129/93a8b43c-b8a6-44ce-bbf0-ccbcc2aa8321" width="300" height="280">
 <br>
 ![Picture2](https://github.com/Rak002/MausamCast/assets/102357129/93a8b43c-b8a6-44ce-bbf0-ccbcc2aa8321)
