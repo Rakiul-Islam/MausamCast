@@ -5,8 +5,11 @@ A Weather App using flutter.
 ## Features
 
 •	Check Current Weather
+
 •	Monitor Past Weather Data
+
 •	Get Graphical Visualization of Weather Stats (like temperature and Wind Speed)
+
 •	Get 5 days Weather Forecast
 
 ## Screenshots
@@ -22,6 +25,5 @@ A Weather App using flutter.
 <img src="https://github.com/Rak002/MausamCast/assets/102357129/8d07ce74-5788-4389-8146-fa9d5f9e5691" width="120" height="244">
 <img src="https://github.com/Rak002/MausamCast/assets/102357129/46b78404-164d-4f25-aba8-785415b09238" width="480" height="244">
 <br>
-
-
+<img src="https://github.com/Rak002/MausamCast/assets/102357129/45c65ec4-ddfc-4bbe-9c9f-aa4815a3e1d4" width="600">
 
