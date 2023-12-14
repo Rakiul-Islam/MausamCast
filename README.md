@@ -42,7 +42,9 @@ A weather forecasting project built using Flutter, Python, Java, and MySQL. It s
 ## System Requirements
 
 •	Operating System: Windows 7 and above, macOS, or Linux
+
 •	Platform: Local Server
+
 •	Special Tools: Pandas
 
 
