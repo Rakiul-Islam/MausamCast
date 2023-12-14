@@ -1,16 +1,16 @@
 # MausamCast
 
-A Weather App using flutter.
+A weather forecasting project built using Flutter, Python, Java, and MySQL. It seamlessly combines web scraping and advanced data processing to deliver accurate and real-time weather updates. The project focuses on providing a user-friendly interface, precise data accuracy, and a comprehensive solution for weather forecasting.
 
 ## Features
 
-•	Check Current Weather
+•	Check Current Weather: Get real-time updates on current weather conditions.
 
-•	Monitor Past Weather Data
+•	Monitor Past Weather Data: Access historical weather data with graphical visualizations.
 
-•	Get Graphical Visualization of Weather Stats (like temperature and Wind Speed)
+•	Graphical Visualization: Visualize weather stats like temperature and wind speed in graphical form.
 
-•	Get 5 days Weather Forecast
+•	5 Days Weather Forecast: Plan ahead with a 5-day weather forecast.
 
 ## Screenshots
 
@@ -26,4 +26,28 @@ A Weather App using flutter.
 <img src="https://github.com/Rak002/MausamCast/assets/102357129/46b78404-164d-4f25-aba8-785415b09238" width="480" height="244">
 <br>
 <img src="https://github.com/Rak002/MausamCast/assets/102357129/45c65ec4-ddfc-4bbe-9c9f-aa4815a3e1d4" width="600">
+
+## Usage
+
+1. Set Location:
+  -Manually search for a place or get live location without using location services.
+  
+2. Weather and Forecast:
+  -View current weather details, historical graphs, and a 5-day forecast.
+  
+3. Application Scenarios:
+  -MausamCast is versatile and can be used for personalized weather alerts, agricultural planning, travel assistance, event planning, and construction project management.
+
+
+## System Requirements
+
+•	Operating System: Windows 7 and above, macOS, or Linux
+•	Platform: Local Server
+•	Special Tools: Pandas
+
+
+
+
+
+
 
