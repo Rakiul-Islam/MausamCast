@@ -1,6 +1,7 @@
 import subprocess, os
 
 def run_java_program(city_name):
+    # thia function will run the java program and return the code
     code = 1 # error code 0 = ok, 1 = fail
     current_directory = os.getcwd()
     base_script = f"cd '{current_directory}\\modules\\java\\scrapper'; java -cp \".;jsoup.jar;mysql-connector-j.jar\" Main"
@@ -14,25 +15,6 @@ def run_java_program(city_name):
     print(p.stdout.decode(), end="")
     print(f"code = {code}")
     print(f"End of output of the java program --------------------------------------------------------------------------")
-
-    """present_dir = os.getcwd() #.replace("\\", "//")
-        parent_of_present_dir =
-        
-        with open(r"./ps_script/run_java_code_base.ps1", "r") as base_ps_file:
-            base_script = base_ps_file.read()
-            base_ps_file.flush()
-        
-        final_string = base_script + " \"" + city_name.lower() + "\""
-        
-        with open(r"./ps_script/run_java_code_final.ps1", "w") as final_ps_file:
-            final_ps_file.write(final_string)
-        
-        print("Executing the java program using Shell--------------------------------------------------")
-        
-        p = subprocess.Popen(["powershell.exe", present_dir + "//ps_script//run_java_code_final.ps1"], stdout=sys.stdout)
-        p.communicate()
-        
-        print("End of output of the java program using Shell---------------------------------------------------------------")"""
 
     return code
 

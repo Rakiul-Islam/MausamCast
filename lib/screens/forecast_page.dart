@@ -21,6 +21,25 @@ class _ForecastPageState extends State<ForecastPage> {
       extendBodyBehindAppBar: true,
       backgroundColor: const Color.fromARGB(255, 0, 29, 66),
       appBar: AppBar(
+        title: kIsWeb?Padding(
+            padding: const EdgeInsets.only(top: 0),
+            child: Row(
+              children: [
+                const Icon(
+                  Icons.wb_sunny_outlined,
+                  size: 35,
+                ),
+                Text(" Forecast",
+                    style: GoogleFonts.notoSans(
+                      textStyle: const TextStyle(
+                        fontSize: 30,
+                        fontWeight: FontWeight.bold,
+                        color: Color.fromARGB(255, 255, 255, 255),
+                      ),
+                    )),
+              ],
+            ),
+          ):Container(),
         backgroundColor: Colors.transparent,
         shadowColor: Colors.transparent,
         leading: Consumer<DataModel>(builder: (context, value, child) {

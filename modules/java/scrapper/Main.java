@@ -15,7 +15,7 @@ import org.jsoup.select.Elements;
 
 public class Main{
     public static void main(String[] args) throws Exception {
-        String  city_name = "chennai"; // This is the default city_name
+        String  city_name = "chennai"; // Default city_name
         boolean run_db_update = true;
         System.out.println("--------------------------------------------------");
             if(args.length>0){
@@ -66,7 +66,8 @@ public class Main{
     }
 
     static Document get_jsoup_documnet(String s, String city_name) throws IOException{
-        // s = {cur, forcast}
+        // This function returns the jsoup document
+        // s is either cur or forcast
         String api_key = "3ee7b1de4ea02df8f299bc30ee86bb8a";
         String url = "";
         if (s == "cur"){
@@ -80,6 +81,7 @@ public class Main{
     }
 
     static HashMap<String,HashMap<String,String>> prepare_hashmap(Document doc, String s){
+        // This function prepares the hashmap from the jsoup document
         // s = {cur, forcast}
         HashMap<String,HashMap<String,String>> hash_map = new HashMap<String,HashMap<String,String>>();
         HashMap<String, String> temp_h1 = new HashMap<String, String> ();
@@ -267,6 +269,7 @@ public class Main{
     }
 
     static int update_database(HashMap<String,HashMap<String,String>> data1, HashMap<String,HashMap<String,String>> data2, String city_name){
+        // This function updates the database with the data from the api        
         String database = "app_project_db";
         String user = "root";
         String password = "20081978";
@@ -369,6 +372,7 @@ public class Main{
 
             query_st = "";
 
+            // This is the block for inserting data into _forecast_data and _forecast_data_extra_info
             for (int i=0;i<40;i++){
             /*Block start: Putting data in -forecast_data */
                 String from_ = data2.get("datetime_order").get(Integer.toString(i));

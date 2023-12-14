@@ -17,6 +17,7 @@ class bcolors:
     UNDERLINE = '\033[4m'
 
 def prepare_new_data(city_name):
+    # this function will run the java program and then run the python program to process the data
     if city_name == "Not Found":
         return 1
     try:
@@ -48,6 +49,7 @@ app = Flask(__name__)
 CORS(app)
 
 @app.route('/api/weather', methods=['GET'])
+# this function will return the weather data of the city
 def get_weather_data():
     city_name = request.args.get('city_name')
     try:
@@ -63,6 +65,7 @@ def get_weather_data():
     return response
 
 @app.route('/api/forecast', methods=['GET'])
+# this function will return the forecast data of the city
 def get_forecast_data():
     city_name = request.args.get('city_name')
     try:
@@ -77,7 +80,24 @@ def get_forecast_data():
     )
     return response
 
+@app.route('/api/forecast_extra', methods=['GET'])
+# this function will return the Extra forecast data of the city
+def get_forecast_data_extra():
+    city_name = request.args.get('city_name')
+    try:
+        prepare_new_data(city_name)
+        json_data = fpu.fetch_process_n_update_forecast_extra(city_name)
+        return jsonify(json_data)
+    except:
+        response = app.response_class(
+        response='Error: Resource not found',
+        status=404, 
+        mimetype='text/plain'
+    )
+    return response
+
 @app.route('/api/weather_n_forecast', methods=['GET'])
+# this function will return the weather and forecast data of the city
 def get_weather_n_forecast_data():
     city_name = request.args.get('city_name')
     try:
@@ -244,4 +264,3 @@ def put_up_weather_n_forecast_data():
 if __name__ == '__main__':
     # app.run(debug=True)
     app.run(debug=True, host = '0.0.0.0')
-

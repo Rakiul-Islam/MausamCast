@@ -323,7 +323,9 @@ class DataModel extends ChangeNotifier {
           'http://localhost:5000/api/weather_n_forecast?city_name=${cityName.toLowerCase()}'));
     } else if (mode == "Remote") {
       response = await http.get(Uri.parse(
-          'http://10.3.15.93:5000/api/weather_n_forecast?city_name=${cityName.toLowerCase()}'));
+          'http://192.168.101.8:5000/api/weather_n_forecast?city_name=${cityName.toLowerCase()}'));
+      // response = await http.get(Uri.parse(
+      //     'http://10.5.131.228:5000/api/weather_n_forecast?city_name=${cityName.toLowerCase()}'));
     } else {
       return 1;
     }

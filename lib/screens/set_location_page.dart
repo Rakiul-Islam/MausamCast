@@ -70,20 +70,32 @@ class _CustomTabsState extends State<CustomTabs>
           tabs: [
             Tab(
                 height: 70,
-                child: Text(
-                  !kIsWeb ? 'Enter' : 'Enter Location Yourself',
-                  style: GoogleFonts.notoSans(
-                    textStyle: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Color.fromARGB(255, 100, 160, 232),
-                    ),
+                child: Container(
+                  width: 150,
+                  child: Row(
+                    children: [
+                      const Icon(
+                            color: Color.fromARGB(255, 100, 160, 232),
+                            Icons.search,
+                            size: 30,
+                          ),
+                      Text(
+                        !kIsWeb ? 'Search' : 'Search',
+                        style: GoogleFonts.notoSans(
+                          textStyle: const TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Color.fromARGB(255, 100, 160, 232),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 )),
             Tab(
                 height: 70,
                 child: Text(
-                  !kIsWeb ? 'Geolocate' : 'Get Location through Geolocate',
+                  !kIsWeb ? 'My Location' : 'My Location',
                   style: GoogleFonts.notoSans(
                     textStyle: const TextStyle(
                       fontSize: 20,
@@ -127,20 +139,6 @@ class _CustomTab1State extends State<CustomTab1> {
   String _displayText = '';
   bool _loadingState = false;
   var prefixIconColor = const Color.fromARGB(192, 255, 255, 255);
-
-  // void _setCity() async {
-  //   setState(() {
-  //     _loadingState = true;
-  //     _displayText = _textEditingController.text;
-  //   });
-  //   Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
-  //     return HomeScreen();
-  //   }));
-  //   setState(() {
-  //     _loadingState = false;
-  //   });
-  //   print('Text from TextField: $_displayText');
-  // }
 
   @override
   void dispose() {
@@ -192,7 +190,7 @@ class _CustomTab1State extends State<CustomTab1> {
                           size: 40,
                         ),
                         labelText: 'Enter Your Location',
-                        hintText: 'Enter Your City/Town/Locality Name...',
+                        hintText: 'Enter your City/Town/Locality name...',
                         labelStyle: const TextStyle(
                           color: Colors.white, // Label text color
                         ),
