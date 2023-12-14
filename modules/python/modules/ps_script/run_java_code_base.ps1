@@ -1,1 +1,0 @@
-PS E:\Rakiul\--.Projects\Python\.Project_Sem_3\java\scrapper>  e:; cd 'e:\Rakiul\--.Projects\Python\.Project_Sem_3\java\scrapper'; & 'C:\Program Files\Java\jdk-20\bin\java.exe' '@C:\Users\RAKIUL\AppData\Local\Temp\cp_2xg3kcqvpt1iu0nwlkyzsiz4g.argfile' 'prj1.App'
